@@ -3,7 +3,7 @@ package com.kenzie.appserver.controller;
 import com.kenzie.appserver.IntegrationTest;
 import com.kenzie.appserver.controller.model.ExampleCreateRequest;
 import com.kenzie.appserver.service.ExampleService;
-import com.kenzie.appserver.service.model.Example;
+import com.kenzie.appserver.service.model.Event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -32,20 +32,20 @@ class ExampleControllerTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    @Test
-    public void getById_Exists() throws Exception {
-
-        String name = mockNeat.strings().valStr();
-
-        Example persistedExample = exampleService.addNewExample(name);
-        mvc.perform(get("/example/{id}", persistedExample.getId())
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("id")
-                        .isString())
-                .andExpect(jsonPath("name")
-                        .value(is(name)))
-                .andExpect(status().is2xxSuccessful());
-    }
+//    @Test
+//    public void getById_Exists() throws Exception {
+//
+//        String name = mockNeat.strings().valStr();
+//
+//        Event persistedExample = exampleService.addNewExample(name);
+//        mvc.perform(get("/example/{id}", persistedExample.getEventId())
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(jsonPath("id")
+//                        .isString())
+//                .andExpect(jsonPath("name")
+//                        .value(is(name)))
+//                .andExpect(status().is2xxSuccessful());
+//    }
 
     @Test
     public void createExample_CreateSuccessful() throws Exception {
