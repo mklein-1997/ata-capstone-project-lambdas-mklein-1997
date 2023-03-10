@@ -1,6 +1,13 @@
 #!/bin/bash
 set -eo pipefail
 
+source ./setupEnvironment.sh
+
+if [ -z "$GITHUB_GROUP_NAME" ] || [ "$GITHUB_GROUP_NAME" == "replacewithyourgroupname" ] ; then
+  echo "Your environment variable GITHUB_GROUP_NAME is not properly configured.  Make sure that you have set it properly in setupEnvironment.sh"
+  exit 1
+fi
+
 echo "Deleting Application CAPSTONE_APPLICATION_STACK"
 aws cloudformation delete-stack --stack-name $CAPSTONE_APPLICATION_STACK
 echo "Deleting Application CAPSTONE_SERVICE_STACK"
