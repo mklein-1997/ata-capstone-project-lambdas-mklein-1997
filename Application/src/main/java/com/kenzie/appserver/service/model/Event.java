@@ -2,6 +2,8 @@ package com.kenzie.appserver.service.model;
 
 import java.util.Objects;
 
+import static java.util.UUID.randomUUID;
+
 public class Event {
     private final String eventId;
     private String customerName;
@@ -9,8 +11,8 @@ public class Event {
     private String eventStatus;
     private String customerEmail;
 
-    public Event(String eventId, String name, String email) {
-        this.eventId = eventId;
+    public Event(String name, String email) {
+        this.eventId = randomUUID().toString();
         this.customerName = name;
         this.customerEmail = email;
     }
