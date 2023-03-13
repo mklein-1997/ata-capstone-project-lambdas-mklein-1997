@@ -1,6 +1,7 @@
 package com.kenzie.capstone.service.dependency;
 
 
+import com.kenzie.capstone.service.dao.EventDao;
 import com.kenzie.capstone.service.dao.ExampleDao;
 import com.kenzie.capstone.service.util.DynamoDbClientProvider;
 
@@ -27,10 +28,10 @@ public class DaoModule {
 
     @Singleton
     @Provides
-    @Named("ExampleDao")
+    @Named("EventDao")
     @Inject
-    public ExampleDao provideExampleDao(@Named("DynamoDBMapper") DynamoDBMapper mapper) {
-        return new ExampleDao(mapper);
+    public EventDao provideEventDao(@Named("DynamoDBMapper") DynamoDBMapper mapper) {
+        return new EventDao(mapper);
     }
 
 }

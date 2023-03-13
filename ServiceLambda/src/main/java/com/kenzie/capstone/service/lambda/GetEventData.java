@@ -2,6 +2,7 @@ package com.kenzie.capstone.service.lambda;
 
 import com.kenzie.capstone.service.LambdaService;
 import com.kenzie.capstone.service.dependency.ServiceComponent;
+import com.kenzie.capstone.service.model.EventData;
 import com.kenzie.capstone.service.model.ExampleData;
 import com.kenzie.capstone.service.dependency.DaggerServiceComponent;
 
@@ -36,17 +37,17 @@ public class GetEventData implements RequestHandler<APIGatewayProxyRequestEvent,
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent()
                 .withHeaders(headers);
 
-        String id = input.getPathParameters().get("id");
+        String eventId = input.getPathParameters().get("eventId");
 
-        if (id == null || id.length() == 0) {
+        if (eventId == null || eventId.length() == 0) {
             return response
                     .withStatusCode(400)
-                    .withBody("Id is invalid");
+                    .withBody("Event ID is invalid");
         }
 
         try {
-            ExampleData exampleData = lambdaService.getExampleData(id);
-            String output = gson.toJson(exampleData);
+            EventData eventData = lambdaService.getEventData(eventId);
+            String output = gson.toJson(eventData);
 
             return response
                     .withStatusCode(200)
