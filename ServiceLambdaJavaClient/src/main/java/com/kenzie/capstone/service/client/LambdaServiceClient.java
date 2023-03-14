@@ -1,13 +1,13 @@
 package com.kenzie.capstone.service.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kenzie.capstone.service.model.ExampleData;
+import com.kenzie.capstone.service.model.EventData;
 
 
 public class LambdaServiceClient {
 
-    private static final String GET_EXAMPLE_ENDPOINT = "example/{id}";
-    private static final String SET_EXAMPLE_ENDPOINT = "example";
+    private static final String GET_EVENT_ENDPOINT = "events/{eventId}";
+    private static final String SET_EVENT_ENDPOINT = "events";
 
     private ObjectMapper mapper;
 
@@ -15,27 +15,27 @@ public class LambdaServiceClient {
         this.mapper = new ObjectMapper();
     }
 
-    public ExampleData getExampleData(String id) {
+    public EventData getEventData(String eventId) {
         EndpointUtility endpointUtility = new EndpointUtility();
-        String response = endpointUtility.getEndpoint(GET_EXAMPLE_ENDPOINT.replace("{id}", id));
-        ExampleData exampleData;
+        String response = endpointUtility.getEndpoint(GET_EVENT_ENDPOINT.replace("{eventId}", eventId));
+        EventData eventData;
         try {
-            exampleData = mapper.readValue(response, ExampleData.class);
+            eventData = mapper.readValue(response, EventData.class);
         } catch (Exception e) {
             throw new ApiGatewayException("Unable to map deserialize JSON: " + e);
         }
-        return exampleData;
+        return eventData;
     }
 
-    public ExampleData setExampleData(String data) {
+    public EventData setEventData(String data) {
         EndpointUtility endpointUtility = new EndpointUtility();
-        String response = endpointUtility.postEndpoint(SET_EXAMPLE_ENDPOINT, data);
-        ExampleData exampleData;
+        String response = endpointUtility.postEndpoint(SET_EVENT_ENDPOINT, data);
+        EventData eventData;
         try {
-            exampleData = mapper.readValue(response, ExampleData.class);
+            eventData = mapper.readValue(response, EventData.class);
         } catch (Exception e) {
             throw new ApiGatewayException("Unable to map deserialize JSON: " + e);
         }
-        return exampleData;
+        return eventData;
     }
 }
