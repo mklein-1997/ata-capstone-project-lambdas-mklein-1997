@@ -10,7 +10,7 @@ public class CacheStore {
     private Cache<String, Event> cache;
 
     public CacheStore(int expiry, TimeUnit timeUnit) {
-            // initalize the cache
+            // initialize the cache
         this.cache = CacheBuilder.newBuilder()
                     .expireAfterWrite(expiry, timeUnit)
                     .concurrencyLevel(Runtime.getRuntime().availableProcessors())
