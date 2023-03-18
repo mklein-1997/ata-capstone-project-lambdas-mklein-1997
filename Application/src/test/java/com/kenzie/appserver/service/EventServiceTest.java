@@ -95,7 +95,7 @@ public class EventServiceTest {
         String id = randomUUID().toString();
 
         // WHEN
-        when(eventRepository.findAll()).thenReturn(List.of());git s
+        when(eventRepository.findAll()).thenReturn(List.of());
         List<EventResponse> response = eventService.findAllEvents();
 
         // THEN
