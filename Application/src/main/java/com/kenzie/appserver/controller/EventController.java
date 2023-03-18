@@ -33,16 +33,8 @@ public class EventController {
         if (createEvent.getEventId() == null || createEvent.getEventId().length() == 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Event ID");
         }
-        EventRecord newEvent = new EventRecord();
-        newEvent.setEventId(randomUUID().toString());
-        newEvent.setCustomerName(createEvent.getCustomerName().get());
-        newEvent.setDate(createEvent.getDate().get());
-        newEvent.setCustomerEmail(createEvent.getCustomerEmail().get());
-        newEvent.setStatus(createEvent.getStatus().get());
 
-        this.eventService.addNewEvent(newEvent);
-
-        EventResponse response = this.convertToResponse(newEvent);
+        EventResponse response = eventService.addNewEvent(createEvent);
 
         return ResponseEntity.created(URI.create("/events/" + response.getEventId())).body(response);
     }
