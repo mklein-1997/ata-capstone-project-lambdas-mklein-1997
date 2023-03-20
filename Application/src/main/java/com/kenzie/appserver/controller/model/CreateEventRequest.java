@@ -6,10 +6,6 @@ import javax.validation.constraints.NotEmpty;
 import java.util.Optional;
 
 public class CreateEventRequest {
-    //assumed all of these are NotEmpty, but may cause problems
-    @NotEmpty
-    @JsonProperty("eventId")
-    private String eventId;
 
     @NotEmpty
     @JsonProperty("date")
@@ -28,14 +24,6 @@ public class CreateEventRequest {
     private Optional<String> customerEmail;
 
     public CreateEventRequest() {}
-
-    public String getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
-    }
 
     public Optional<String> getDate() {
         return date;

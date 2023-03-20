@@ -61,10 +61,14 @@ class EventControllerTest {
         String event = mockNeat.strings().valStr();
 
         CreateEventRequest createEventRequest = new CreateEventRequest();
-        createEventRequest.setEventId(event);
+        createEventRequest.setCustomerName(Optional.of("customer"));
+        createEventRequest.setCustomerEmail(Optional.of("email"));
+        createEventRequest.setDate(Optional.of("date"));
+        createEventRequest.setStatus(Optional.of("status"));
+        //createEventRequest.setEventId(event);
 
         mapper.registerModule(new JavaTimeModule());
-
+        //an id is created after a createRequest is called
         mvc.perform(post("/events")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)

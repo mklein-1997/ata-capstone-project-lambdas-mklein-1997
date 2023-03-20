@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
 
@@ -29,13 +30,18 @@ public class EventController {
 
     @PostMapping
     public ResponseEntity<EventResponse> addNewEvent(@RequestBody CreateEventRequest createEvent) {
+        //you get what the user added
+        //they don't provide the id
+        String id = UUID.randomUUID().toString();
+        //either create an event here
 
-        if (createEvent.getEventId() == null || createEvent.getEventId().length() == 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Event ID");
-        }
+        Event event = new Event(createEvent.getCustomerName().get(), createEvent.getCustomerEmail().get(), createEvent.getDate().get(), createEvent.getStatus().get());
+        //add it with the service
+        //this is exactly how the unit four project has it
+        //eventService.addNewEvent(event);
+        //EventResponse response = convertToResponse(event);
 
         EventResponse response = eventService.addNewEvent(createEvent);
-
         return ResponseEntity.created(URI.create("/events/" + response.getEventId())).body(response);
     }
 
