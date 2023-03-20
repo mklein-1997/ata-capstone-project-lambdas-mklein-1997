@@ -63,7 +63,7 @@ class LambdaServiceTest {
         String id = "fakeid";
         String data = "somedata";
         EventRecord record = new EventRecord();
-        record.setId(id);
+        record.setEventId(id);
         record.setData(data);
 
 
