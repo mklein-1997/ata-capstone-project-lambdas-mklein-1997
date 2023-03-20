@@ -33,7 +33,6 @@ public class EventController {
         //you get what the user added
         //they don't provide the id
         String id = UUID.randomUUID().toString();
-        //either create an event here
 
         Event event = new Event(createEvent.getCustomerName().get(), createEvent.getCustomerEmail().get(), createEvent.getDate().get(), createEvent.getStatus().get());
         //add it with the service
