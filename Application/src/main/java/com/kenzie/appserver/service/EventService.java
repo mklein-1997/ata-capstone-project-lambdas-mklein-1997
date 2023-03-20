@@ -7,6 +7,7 @@ import com.kenzie.appserver.repositories.model.EventRecord;
 import com.kenzie.appserver.service.model.Event;
 
 
+import com.kenzie.capstone.service.client.LambdaServiceClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,10 +22,12 @@ import java.util.stream.StreamSupport;
 @Service
 public class EventService {
     private EventRepository eventRepository;
+    private LambdaServiceClient lambdaServiceClient;
 
 
-    public EventService(EventRepository eventRepository) {
+    public EventService(EventRepository eventRepository, LambdaServiceClient lambdaServiceClient) {
         this.eventRepository = eventRepository;
+        this.lambdaServiceClient = lambdaServiceClient;
     }
 
     /**
@@ -61,12 +64,16 @@ public class EventService {
      * @param event
      * @return Event
      */
-    public EventResponse addNewEvent(EventRecord event) {
+    public EventResponse addNewEvent(CreateEventRequest event) {
+
         if(event.getEventId() == null || event.getEventId().length() == 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Event ID");
         }
-        event = eventRepository.save(event);
-        return toEventResponse(event);
+
+        EventRecord eventRecord = toEventRecord(event);
+        eventRepository.save(eventRecord);
+        lambdaServiceClient.setEventData(eventRecord.getEventId());
+        return toEventResponse(eventRecord);
 
     }
 
@@ -107,18 +114,13 @@ public class EventService {
         eventResponse.setStatus(eventRecord.getStatus());
         return eventResponse;
     }
-
-//    private EventRecord toEventRecord(CreateEventRequest createEventRequest) {
-//        if(createEventRequest == null) {
-//            return null;
-//        }
-//        EventRecord eventRecord = new EventRecord();
-//        eventRecord.setCustomerName(String.valueOf(createEventRequest.getCustomerName()));
-//        eventRecord.setCustomerEmail(String.valueOf(createEventRequest.getCustomerEmail()));
-//        eventRecord.setDate(String.valueOf(createEventRequest.getDate()));
-//        eventRecord.setEventId(String.valueOf(createEventRequest.getEventId()));
-//        eventRecord.setStatus(String.valueOf(createEventRequest.getStatus()));
-//        return eventRecord;
-//    }
-
+    private EventRecord toEventRecord(CreateEventRequest event) {
+        EventRecord eventRecord = new EventRecord();
+        eventRecord.setCustomerName(event.getCustomerName().get());
+        eventRecord.setCustomerEmail(event.getCustomerEmail().get());
+        eventRecord.setDate(event.getDate().get());
+        eventRecord.setEventId(event.getEventId());
+        eventRecord.setStatus(event.getStatus().get());
+        return eventRecord;
+    }
 }

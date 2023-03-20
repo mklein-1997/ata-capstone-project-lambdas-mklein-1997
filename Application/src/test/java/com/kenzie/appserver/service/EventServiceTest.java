@@ -1,5 +1,6 @@
 package com.kenzie.appserver.service;
 
+import com.kenzie.appserver.controller.model.CreateEventRequest;
 import com.kenzie.appserver.controller.model.EventResponse;
 import com.kenzie.appserver.repositories.EventRepository;
 import com.kenzie.appserver.repositories.model.EventRecord;
@@ -27,7 +28,7 @@ public class EventServiceTest {
     void setup() {
         eventRepository = mock(EventRepository.class);
         lambdaServiceClient = mock(LambdaServiceClient.class);
-        eventService = new EventService(eventRepository);
+        eventService = new EventService(eventRepository, lambdaServiceClient);
     }
     /** ------------------------------------------------------------------------
      *  exampleService.findById
@@ -106,6 +107,13 @@ public class EventServiceTest {
         // GIVEN
         String id = randomUUID().toString();
 
+        CreateEventRequest request = new CreateEventRequest();
+        request.setEventId(id);
+        request.setCustomerName(Optional.of("Test Name"));
+        request.setCustomerEmail(Optional.of("email"));
+        request.setDate(Optional.of("date"));
+        request.setStatus(Optional.of("status"));
+
         EventRecord record = new EventRecord();
         record.setEventId(id);
         record.setCustomerName("Test Name");
@@ -115,7 +123,7 @@ public class EventServiceTest {
 
         // WHEN
         when(eventRepository.save(record)).thenReturn(record);
-        EventResponse response = eventService.addNewEvent(record);
+        EventResponse response = eventService.addNewEvent(request);
 
         // THEN
         Assertions.assertNotNull(response, "The object is returned");
@@ -126,15 +134,9 @@ public class EventServiceTest {
     @Test
     void addNewEventInvalidId_throws_ResponseStatusException() {
         // GIVEN
-        EventRecord record = new EventRecord();
-        record.setEventId(null);
-        record.setCustomerName("Test Name");
-        record.setCustomerEmail("email");
-        record.setDate("date");
-        record.setStatus("status");
 
         assertThrows(ResponseStatusException.class, () -> {
-            eventService.addNewEvent(record);
+            eventService.addNewEvent(new CreateEventRequest());
         });
     }
 
