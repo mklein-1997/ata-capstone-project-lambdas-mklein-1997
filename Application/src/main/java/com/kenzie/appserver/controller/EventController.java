@@ -24,23 +24,19 @@ public class EventController {
 
     private EventService eventService;
 
-    EventController(EventService eventservice){
-        this.eventService = eventService;
+    EventController(EventService service) {
+        //Rename it to avoid confusion and any possible bugs
+        this.eventService = service;
     }
 
     @PostMapping
     public ResponseEntity<EventResponse> addNewEvent(@RequestBody CreateEventRequest createEvent) {
-        //you get what the user added
-        //they don't provide the id
-        String id = UUID.randomUUID().toString();
+        //EventId is not needed here because it is auto generated in the Event class
+        //String id = UUID.randomUUID().toString();
 
         Event event = new Event(createEvent.getCustomerName().get(), createEvent.getCustomerEmail().get(), createEvent.getDate().get(), createEvent.getStatus().get());
-        //add it with the service
-        //this is exactly how the unit four project has it
-        //eventService.addNewEvent(event);
-        //EventResponse response = convertToResponse(event);
 
-        EventResponse response = eventService.addNewEvent(createEvent);
+        EventResponse response = eventService.addNewEvent(event);
         return ResponseEntity.created(URI.create("/events/" + response.getEventId())).body(response);
     }
 
@@ -56,7 +52,7 @@ public class EventController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EventResponse> searchEventById(@PathVariable("id") String eventId) {
-        EventResponse response = eventService.getEvent(eventId);
+        EventResponse response = eventService.findEventById(eventId);
         if (response == null) {
             return ResponseEntity.notFound().build();
         }

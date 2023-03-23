@@ -1,6 +1,5 @@
 package com.kenzie.appserver.service;
 
-import com.kenzie.appserver.controller.model.CreateEventRequest;
 import com.kenzie.appserver.controller.model.EventResponse;
 import com.kenzie.appserver.repositories.EventRepository;
 import com.kenzie.appserver.repositories.model.EventRecord;
@@ -15,15 +14,14 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 
 @Service
 public class EventService {
-    private EventRepository eventRepository;
-    private LambdaServiceClient lambdaServiceClient;
+    private final EventRepository eventRepository;
+    private final LambdaServiceClient lambdaServiceClient;
 
 
     public EventService(EventRepository eventRepository, LambdaServiceClient lambdaServiceClient) {
@@ -51,29 +49,28 @@ public class EventService {
 
     /**
      * Find event by id
-     * @param id
+     * @param  id Event id
      * @return Event
      */
 
-    public EventResponse getEvent(String id) {
+    public EventResponse findEventById(String id) {
         EventRecord eventRecord = eventRepository.findById(id).orElse(null);
         return toEventResponse(eventRecord);
     }
 
 /**
      * Create a new event
-     * @param event
-     * @return Event
+     * @param event Event
+     * @return EventResponse
      */
-    public EventResponse addNewEvent(CreateEventRequest event) {
+    public EventResponse addNewEvent(Event event) {
 
-     /*   if(event.getEventId() == null || event.getEventId().length() == 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Event ID");
-        }*/
-        //createRequestEvent cannot get and set IDs
-        String id = UUID.randomUUID().toString();
+        if(event == null) {
+            throw new NullPointerException("Event cannot be null");
+        }
+
         EventRecord eventRecord = toEventRecord(event);
-        eventRecord.setEventId(id);
+
         eventRepository.save(eventRecord);
         lambdaServiceClient.setEventData(eventRecord.getEventId());
         return toEventResponse(eventRecord);
@@ -117,13 +114,13 @@ public class EventService {
         eventResponse.setStatus(eventRecord.getStatus());
         return eventResponse;
     }
-    private EventRecord toEventRecord(CreateEventRequest event) {
+    private EventRecord toEventRecord(Event event) {
         EventRecord eventRecord = new EventRecord();
-        eventRecord.setCustomerName(event.getCustomerName().get());
-        eventRecord.setCustomerEmail(event.getCustomerEmail().get());
-        eventRecord.setDate(event.getDate().get());
-        //eventRecord.setEventId(event.getEventId());
-        eventRecord.setStatus(event.getStatus().get());
+        eventRecord.setCustomerName(event.getCustomerName());
+        eventRecord.setCustomerEmail(event.getCustomerEmail());
+        eventRecord.setDate(event.getEventDate());
+        eventRecord.setEventId(event.getEventId());
+        eventRecord.setStatus(event.getEventStatus());
         return eventRecord;
     }
 }
