@@ -13,7 +13,7 @@ public class EventRecord {
     private String data;
 
     @DynamoDBHashKey(attributeName = "eventId")
-    public String getId() {
+    public String getEventId() {
         return eventId;
     }
 
@@ -22,7 +22,7 @@ public class EventRecord {
         return data;
     }
 
-    public void setId(String id) {
+    public void setEventId(String id) {
         this.eventId = eventId;
     }
 

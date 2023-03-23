@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -66,11 +67,13 @@ public class EventService {
      */
     public EventResponse addNewEvent(CreateEventRequest event) {
 
-        if(event.getEventId() == null || event.getEventId().length() == 0) {
+     /*   if(event.getEventId() == null || event.getEventId().length() == 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Event ID");
-        }
-
+        }*/
+        //createRequestEvent cannot get and set IDs
+        String id = UUID.randomUUID().toString();
         EventRecord eventRecord = toEventRecord(event);
+        eventRecord.setEventId(id);
         eventRepository.save(eventRecord);
         lambdaServiceClient.setEventData(eventRecord.getEventId());
         return toEventResponse(eventRecord);
@@ -119,7 +122,7 @@ public class EventService {
         eventRecord.setCustomerName(event.getCustomerName().get());
         eventRecord.setCustomerEmail(event.getCustomerEmail().get());
         eventRecord.setDate(event.getDate().get());
-        eventRecord.setEventId(event.getEventId());
+        //eventRecord.setEventId(event.getEventId());
         eventRecord.setStatus(event.getStatus().get());
         return eventRecord;
     }

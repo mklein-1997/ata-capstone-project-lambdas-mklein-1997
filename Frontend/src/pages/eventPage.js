@@ -1,15 +1,15 @@
 import BaseClass from "../util/baseClass";
 import DataStore from "../util/DataStore";
-import ExampleClient from "../api/exampleClient";
+import EventClient from "../api/eventClient";
 
 /**
  * Logic needed for the view playlist page of the website.
  */
-class ExamplePage extends BaseClass {
+class EventPage extends BaseClass {
 
     constructor() {
         super();
-        this.bindClassMethods(['onGet', 'onCreate', 'renderExample'], this);
+        this.bindClassMethods(['onGet', 'onCreate', 'renderEvent'], this);
         this.dataStore = new DataStore();
     }
 
@@ -19,22 +19,22 @@ class ExamplePage extends BaseClass {
     async mount() {
         document.getElementById('get-by-id-form').addEventListener('submit', this.onGet);
         document.getElementById('create-form').addEventListener('submit', this.onCreate);
-        this.client = new ExampleClient();
+        this.client = new EventClient();
 
-        this.dataStore.addChangeListener(this.renderExample)
+        this.dataStore.addChangeListener(this.renderEvent)
     }
 
     // Render Methods --------------------------------------------------------------------------------------------------
 
-    async renderExample() {
+    async renderEvent() {
         let resultArea = document.getElementById("result-info");
 
-        const example = this.dataStore.get("example");
+        const event = this.dataStore.get("event");
 
-        if (example) {
+        if (event) {
             resultArea.innerHTML = `
-                <div>ID: ${example.id}</div>
-                <div>Name: ${example.name}</div>
+                <div>ID: ${event.id}</div>
+                <div>Name: ${event.customerEmail}</div>
             `
         } else {
             resultArea.innerHTML = "No Item";
@@ -48,12 +48,12 @@ class ExamplePage extends BaseClass {
         event.preventDefault();
 
         let id = document.getElementById("id-field").value;
-        this.dataStore.set("example", null);
+        this.dataStore.set("event", null);
 
-        let result = await this.client.getExample(id, this.errorHandler);
-        this.dataStore.set("example", result);
+        let result = await this.client.getEvent(id, this.errorHandler);
+        this.dataStore.set("event", result);
         if (result) {
-            this.showMessage(`Got ${result.name}!`)
+            this.showMessage(`Got ${result.customerName}!`)
         } else {
             this.errorHandler("Error doing GET!  Try again...");
         }
@@ -62,15 +62,18 @@ class ExamplePage extends BaseClass {
     async onCreate(event) {
         // Prevent the page from refreshing on form submit
         event.preventDefault();
-        this.dataStore.set("example", null);
+        this.dataStore.set("event", null);
 
         let name = document.getElementById("create-name-field").value;
+        let date = document.getElementById("create-date-field").value;
+        let email = document.getElementById("create-email-field").value;
+        let status = document.getElementById("create-status-field").value;
 
-        const createdExample = await this.client.createExample(name, this.errorHandler);
-        this.dataStore.set("example", createdExample);
+        const createdEvent = await this.client.createEvent(name,email,date, status, this.errorHandler);
+        this.dataStore.set("event", createdExample);
 
-        if (createdExample) {
-            this.showMessage(`Created ${createdExample.name}!`)
+        if (createdEvent) {
+            this.showMessage(`Created ${createdEvent.date}!`)
         } else {
             this.errorHandler("Error creating!  Try again...");
         }
@@ -81,8 +84,8 @@ class ExamplePage extends BaseClass {
  * Main method to run when the page contents have loaded.
  */
 const main = async () => {
-    const examplePage = new ExamplePage();
-    examplePage.mount();
+    const eventPage = new EventPage();
+    eventPage.mount();
 };
 
 window.addEventListener('DOMContentLoaded', main);
