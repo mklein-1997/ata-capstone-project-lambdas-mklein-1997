@@ -41,7 +41,8 @@ public class EventDao {
 
     public List<EventRecord> getEventData(String eventId) {
         EventRecord eventRecord = new EventRecord();
-        eventRecord.setId(eventId);
+        //Rename this to eventId
+        eventRecord.setEventId(eventId);
 
         DynamoDBQueryExpression<EventRecord> queryExpression = new DynamoDBQueryExpression<EventRecord>()
                 .withHashKeyValues(eventRecord)
@@ -52,7 +53,8 @@ public class EventDao {
 
     public EventRecord setEventData(String eventId, String data) {
         EventRecord eventRecord = new EventRecord();
-        eventRecord.setId(eventId);
+        //Rename this to eventId
+        eventRecord.setEventId(eventId);
         eventRecord.setData(data);
 
         try {

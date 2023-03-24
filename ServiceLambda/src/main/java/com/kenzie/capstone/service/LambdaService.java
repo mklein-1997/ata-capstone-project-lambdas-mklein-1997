@@ -24,7 +24,7 @@ public class LambdaService {
     public EventData getEventData(String eventId) {
         List<EventRecord> records = eventDao.getEventData(eventId);
         if (records.size() > 0) {
-            return new EventData(records.get(0).getId(), records.get(0).getData());
+            return new EventData(records.get(0).getEventId(), records.get(0).getData());
         }
         return null;
     }

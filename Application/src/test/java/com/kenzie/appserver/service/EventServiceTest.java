@@ -1,6 +1,5 @@
 package com.kenzie.appserver.service;
 
-import com.kenzie.appserver.controller.model.CreateEventRequest;
 import com.kenzie.appserver.controller.model.EventResponse;
 import com.kenzie.appserver.repositories.EventRepository;
 import com.kenzie.appserver.repositories.model.EventRecord;
@@ -43,10 +42,9 @@ public class EventServiceTest {
         record.setEventId(id);
         record.setCustomerName("Test Name");
 
-
         // WHEN
         when(eventRepository.findById(id)).thenReturn(Optional.of(record));
-        EventResponse response = eventService.getEvent(id);
+        EventResponse response = eventService.findEventById(id);
 
         // THEN
         Assertions.assertNotNull(response, "The object is returned");
@@ -61,7 +59,7 @@ public class EventServiceTest {
 
         // WHEN
         when(eventRepository.findById(id)).thenReturn(Optional.empty());
-        EventResponse response = eventService.getEvent(id);
+        EventResponse response = eventService.findEventById(id);
 
         // THEN
         Assertions.assertNull(response, "The object is returned");
@@ -92,8 +90,6 @@ public class EventServiceTest {
     @Test
     void findAllEventsNotFound() {
         // GIVEN
-        String id = randomUUID().toString();
-
         // WHEN
         when(eventRepository.findAll()).thenReturn(List.of());
         List<EventResponse> response = eventService.findAllEvents();
@@ -105,17 +101,15 @@ public class EventServiceTest {
     @Test
     void addNewEvent() {
         // GIVEN
-        String id = randomUUID().toString();
+        String name = "Test Name";
+        String email = "email";
+        String date = "date";
+        String status = "status";
 
-        CreateEventRequest request = new CreateEventRequest();
-        request.setEventId(id);
-        request.setCustomerName(Optional.of("Test Name"));
-        request.setCustomerEmail(Optional.of("email"));
-        request.setDate(Optional.of("date"));
-        request.setStatus(Optional.of("status"));
+        Event event = new Event(name, email, date, status);
 
         EventRecord record = new EventRecord();
-        record.setEventId(id);
+        record.setEventId(event.getEventId());
         record.setCustomerName("Test Name");
         record.setCustomerEmail("email");
         record.setDate("date");
@@ -123,7 +117,7 @@ public class EventServiceTest {
 
         // WHEN
         when(eventRepository.save(record)).thenReturn(record);
-        EventResponse response = eventService.addNewEvent(request);
+        EventResponse response = eventService.addNewEvent(event);
 
         // THEN
         Assertions.assertNotNull(response, "The object is returned");
@@ -132,12 +126,9 @@ public class EventServiceTest {
     }
 
     @Test
-    void addNewEventInvalidId_throws_ResponseStatusException() {
-        // GIVEN
-
-        assertThrows(ResponseStatusException.class, () -> {
-            eventService.addNewEvent(new CreateEventRequest());
-        });
+    void addNullEvent_throwsNullPointerException(){
+        //THEN
+        assertThrows(NullPointerException.class, () -> eventService.addNewEvent(null));
     }
 
     @Test
@@ -232,9 +223,7 @@ public class EventServiceTest {
         when(eventRepository.findById(anyString())).thenReturn(Optional.empty());
 
         //THEN
-        assertThrows(ResponseStatusException.class, () -> {
-            eventService.update(id, event);
-        });
+        assertThrows(ResponseStatusException.class, () -> eventService.update(id, event));
 
     }
 }
