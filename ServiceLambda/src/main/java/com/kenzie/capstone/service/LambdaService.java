@@ -32,5 +32,5 @@ public class LambdaService {
         return new ExampleData(id, data);
     }
 
-    pp
+
 }
