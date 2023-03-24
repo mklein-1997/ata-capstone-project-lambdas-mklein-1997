@@ -6,13 +6,13 @@ Parameters:
     Type: String
     Default: dev
 Resources:
-  GetExampleDataFunction:
+  GetEventDataFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
-      Handler: com.kenzie.capstone.service.lambda.GetExampleData
+      Handler: com.kenzie.capstone.service.lambda.GetEventData
       Runtime: java11
-      Description: Get Example Data for given id
+      Description: Get Event Data for given eventId
       MemorySize: 512
       Timeout: 240
       # Function's execution role
@@ -28,15 +28,15 @@ Resources:
         UpdateResource:
           Type: Api
           Properties:
-            Path: /example/{id}
+            Path: /events/{eventId}
             Method: get
-  SetExampleDataFunction:
+  SetEventDataFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
-      Handler: com.kenzie.capstone.service.lambda.SetExampleData
+      Handler: com.kenzie.capstone.service.lambda.SetEventData
       Runtime: java11
-      Description: Set Example Data
+      Description: Set Event Data
       MemorySize: 512
       Timeout: 240
       # Function's execution role
@@ -52,6 +52,6 @@ Resources:
         UpdateResource:
           Type: Api
           Properties:
-            Path: /example/
+            Path: /events/
             Method: post
 

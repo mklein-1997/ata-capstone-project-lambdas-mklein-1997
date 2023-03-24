@@ -4,21 +4,58 @@
     <script type="text/javascript" src="examplePage.js"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600&family=Edu+NSW+ACT+Foundation:wght@400;500&display=swap" rel="stylesheet">
+
 </head>
 <body class="background">
     <header class="header" id="header">
         <div class="site-title">
-            <a class="header_home" href="index.html">Example App</a>
+            <a class="header_home" href="index.html">Events</a>
         </div>
     </header>
     <div class="card">
-        <h2>Create Example</h2>
+        <h2>Create Event</h2>
         <form class="card-content" id="create-form">
             <p class="form-field">
                 <label>Name</label>
                 <input type="text" required class="validated-field" id="create-name-field">
             </p>
-            <button type="submit">Create</button>
+            <p class="form-field">
+                <label>Email Address</label>
+                <input type="email" required class="validated-field" id="create-email-field">
+            </p>
+            <p class="form-field">
+                <label>Date</label>
+                <input type="date" required class="validated-field" id="create-date-field">
+            </p>
+            <p class="form-field">
+                <label>Status</label>
+                <input type="text" required class="validated-field" id="create-status-field">
+            </p>
+            <div class="checkbox-field">
+                <label>Type</label>
+            <div>
+                <input type="checkbox" id="create-workshop-form"  value="workshop">
+                <label for="create-workshop-form"> Workshop</label><br>
+            </div>
+            <div>
+                <input type="checkbox" id="create-conference-form"  value="conference">
+                <label for="create-conference-form"> Conference</label><br>
+            </div>
+            <div>
+                <input type="checkbox" id="create-charity-form"  value="charity">
+                <label for="create-charity-form"> Charity</label><br>
+            </div>
+            <div>
+                <input type="checkbox" id="create-private-form"  value="private">
+                <label for="create-private-form"> Private</label><br>
+            </div>
+        </div>
+            <div class="btn-container">
+                <button type="submit">Create</button>
+            </div>
         </form>
     </div>
     <div class="card">

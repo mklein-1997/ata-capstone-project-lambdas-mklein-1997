@@ -8,7 +8,7 @@ module.exports = {
     usedExports: true
   },
   entry: {
-    examplePage: path.resolve(__dirname, 'src', 'pages', 'examplePage.js'),
+    eventPage: path.resolve(__dirname, 'src', 'pages', 'eventPage.js'),
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -27,7 +27,7 @@ module.exports = {
     proxy: [
       {
         context: [
-          '/example',
+          '/events',
         ],
         target: 'http://localhost:5001'
       }

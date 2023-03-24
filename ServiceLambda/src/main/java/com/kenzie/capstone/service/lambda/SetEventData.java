@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GetEventData implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+public class SetEventData implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
     static final Logger log = LogManager.getLogger();
 
@@ -36,16 +36,16 @@ public class GetEventData implements RequestHandler<APIGatewayProxyRequestEvent,
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent()
                 .withHeaders(headers);
 
-        String eventId = input.getPathParameters().get("eventId");
+        String data = input.getBody();
 
-        if (eventId == null || eventId.length() == 0) {
+        if (data == null || data.length() == 0) {
             return response
                     .withStatusCode(400)
-                    .withBody("Event ID is invalid");
+                    .withBody("data is invalid");
         }
 
         try {
-            EventData eventData = lambdaService.getEventData(eventId);
+            EventData eventData = lambdaService.setEventData(data);
             String output = gson.toJson(eventData);
 
             return response

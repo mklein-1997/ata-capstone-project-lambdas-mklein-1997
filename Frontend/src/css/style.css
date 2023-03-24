@@ -1,34 +1,48 @@
+/*
+font-family: 'Dancing Script', cursive;
+font-family: 'Edu NSW ACT Foundation', cursive;
+
+*/
 :root {
     /* css variables: https://developer.mozilla.org/en-US/docs/Web/CSS/var */
-    --primary-color: #131921;
-    --secondary-color: #fff;
-    --error-color: rgba(194, 0, 0, 0.71);
+    --primary-color: #b6dcc9;
+    --secondary-color: #d2647d;
+    --sections:rgba(134, 108, 134, 0.7);
+    --text:rgb(252, 252, 238);
+    /*--error-color: #A53860;*/
+    --error-color:#ff471e;
 }
-
+body{
+color:var(--text);
+font-family: 'Edu NSW ACT Foundation', cursive;
+}
 .background {
-    background-color: #eaeded;
+    background-color: var(--primary-color);
     margin: 0;
     counter-reset: section;
 }
 
 .header {
     /* Flexbox: https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
+    font-family: 'Dancing Script', cursive;
+    min-height:20vh;
+    /*background-color: var(--secondary-color);*/
+    color: var(--primary-color);
+    padding: 0 2rem;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
-    padding: 0 20px;
 }
 
 .header_home {
-    font-size: 36px;
-    line-height: 40px;
-    height: 100px;
+    font-size: 5rem;
     text-decoration: none;
-    color: var(--secondary-color);
+    text-shadow:.1rem .1rem rgb(119, 130, 167);
+    color:var(--primary-color);
+    color:#310e48;
 }
-
+a{
+    color:#61C9A8;
+}
 .header_nav_link {
     margin-left: 20px;
     vertical-align: top;
@@ -38,26 +52,54 @@
 .about {
     margin-left: 20px;
 }
-
+.btn-container{
+    display:flex;
+    justify-content: center;
+}
 .button, button {
-    background: #aed9ff;
-    padding: 3px;
+    width:50%;
+    background: #61C9A8;
+
+    padding: .5rem 1rem;
     border-radius: 3px;
     text-decoration: none;
     color: black;
     border: 1px solid black;
     cursor: pointer;
+    margin-top:2rem;
+    font-family: inherit;
+    font-weight:500;
+    font-size:1.6rem;
 }
 
 .button:hover, button:hover {
-    background: #9cc3e4;
+    background-color:#BBCBCB;
 }
 
+
 .card {
-    color: var(--primary-color);
-    background-color: var(--secondary-color);
-    margin: 20px;
-    padding: 10px 20px;
+    color: var(--text);
+    background-color: var(--sections);
+    margin: 10% auto;
+    padding: 20px;
+    color: var(--text);
+    max-width:50%;
+    box-shadow: 0 0 1rem 0 rgba(64, 49, 69, .6);
+}
+.card h2{
+    text-align:center;
+    letter-spacing: 1px;
+}
+
+.checkbox-field{
+    display:grid;
+    grid-template-columns:2;
+    font-size:1.4rem;
+    font-weight:500;
+    margin:0 auto;
+    width:fit-content;
+    height:fit-content;
+    gap:.5rem;
 }
 
 .validated-field:invalid {
@@ -69,11 +111,24 @@
 
 .card-content {
     max-width: 500px;
+    margin:0 auto;
 }
 
-.card-content .form-field {
+.form-field {
     display: flex;
     flex-direction: column;
+    text-align:center;
+    font-size:1.4rem;
+    gap:.5rem;
+    font-weight:500;
+}
+.form-field input{
+    padding:.4rem .2rem;
+    font-size:1rem;
+}
+.form-field input,
+textarea{
+    background-color:ivory;
 }
 
 #concert-list li {
