@@ -31,4 +31,6 @@ public class LambdaService {
         ExampleRecord record = exampleDao.setExampleData(id, data);
         return new ExampleData(id, data);
     }
+
+    pp
 }
