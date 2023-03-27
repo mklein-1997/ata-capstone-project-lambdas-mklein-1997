@@ -6,6 +6,7 @@ public class EventData {
     private String eventId;
     private String data;
 
+
     public EventData(String eventId, String data) {
         this.eventId = eventId;
         this.data = data;

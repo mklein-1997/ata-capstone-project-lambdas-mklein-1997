@@ -7,6 +7,7 @@ import com.kenzie.appserver.service.model.Event;
 
 
 import com.kenzie.capstone.service.client.LambdaServiceClient;
+import com.kenzie.capstone.service.model.EventData;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -58,24 +59,37 @@ public class EventService {
         return toEventResponse(eventRecord);
     }
 
-/**
-     * Create a new event
-     * @param event Event
-     * @return EventResponse
-     */
-    public EventResponse addNewEvent(Event event) {
+//    public EventResponse addNewEvent(Event event) {
+//
+//        if(event == null) {
+//            throw new NullPointerException("Event cannot be null");
+//        }
+//
+//        EventRecord eventRecord = toEventRecord(event);
+//
+//        eventRepository.save(eventRecord);
+//        lambdaServiceClient.setEventData(eventRecord.getEventId());
+//        return toEventResponse(eventRecord);
+//
+//    }
+        public Event addNewEvent(String newEvent) {
+            // Example sending data to the lambda
+            EventData dataFromLambda = lambdaServiceClient.setEventData(newEvent);
 
-        if(event == null) {
-            throw new NullPointerException("Event cannot be null");
+            // Example sending data to the local repository
+            EventRecord eventRecord = new EventRecord();
+            eventRecord.setEventId(dataFromLambda.getEventId());
+            eventRecord.setCustomerEmail(dataFromLambda.getData());
+            eventRecord.setDate(dataFromLambda.getData());
+            eventRecord.setStatus(dataFromLambda.getData());
+            eventRecord.setCustomerName(dataFromLambda.getData());
+            eventRepository.save(eventRecord);
+
+            Event event = new Event(dataFromLambda.getEventId(), newEvent);
+            return event;
         }
 
-        EventRecord eventRecord = toEventRecord(event);
 
-        eventRepository.save(eventRecord);
-        lambdaServiceClient.setEventData(eventRecord.getEventId());
-        return toEventResponse(eventRecord);
-
-    }
 
     public EventResponse update(String id, Event event) {
         Optional<EventRecord> eventRecords = eventRepository.findById(id);
