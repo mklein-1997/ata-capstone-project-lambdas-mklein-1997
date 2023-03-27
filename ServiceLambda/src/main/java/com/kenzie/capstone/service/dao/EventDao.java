@@ -12,6 +12,7 @@ import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.google.common.collect.ImmutableMap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EventDao {
@@ -68,6 +69,10 @@ public class EventDao {
         }
 
         return eventRecord;
+    }
+
+    public Boolean deleteEventData(EventRecord eventId) {
+        return true;
     }
 }
 
