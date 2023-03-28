@@ -59,24 +59,26 @@ public class EventService {
         return toEventResponse(eventRecord);
     }
 
-//    public EventResponse addNewEvent(Event event) {
-//
-//        if(event == null) {
-//            throw new NullPointerException("Event cannot be null");
-//        }
-//
-//        EventRecord eventRecord = toEventRecord(event);
-//
-//        eventRepository.save(eventRecord);
-//        lambdaServiceClient.setEventData(eventRecord.getEventId());
-//        return toEventResponse(eventRecord);
-//
-//    }
-        public Event addNewEvent(String newEvent) {
-            // Example sending data to the lambda
+    public EventResponse addNewEvent(Event event) {
+
+        if(event == null) {
+            throw new NullPointerException("Event cannot be null");
+        }
+
+        EventRecord eventRecord = toEventRecord(event);
+
+        eventRepository.save(eventRecord);
+        lambdaServiceClient.setEventData(eventRecord.getEventId());
+        return toEventResponse(eventRecord);
+
+    }
+
+        public Event addNewStringEvent(String newEvent) {
+            //addNewEvent in EventService returns EventRecord instead of String
+            //original ExampleService file had String type https://tinyurl.com/addNewExample
+
             EventData dataFromLambda = lambdaServiceClient.setEventData(newEvent);
 
-            // Example sending data to the local repository
             EventRecord eventRecord = new EventRecord();
             eventRecord.setEventId(dataFromLambda.getEventId());
             eventRecord.setCustomerEmail(dataFromLambda.getData());

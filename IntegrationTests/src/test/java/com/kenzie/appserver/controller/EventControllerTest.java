@@ -43,7 +43,7 @@ class EventControllerTest {
 
         String event = mockNeat.strings().valStr();
 
-        Event persistedEvent = eventService.addNewEvent(event);
+        Event persistedEvent = eventService.addNewStringEvent(event);
         //addNewEvent in EventService returns EventRecord instead of String
         //original ExampleService file had String type https://tinyurl.com/addNewExample
 
@@ -98,7 +98,7 @@ class EventControllerTest {
         String customerEmail = "erica.muse@mykenzie.snhu.edu";
 
         Event event = new Event(eventId,date,status,customerName,customerEmail);
-        Event persistedEvent = eventService.addNewEvent(eventId);
+        Event persistedEvent = eventService.addNewStringEvent(eventId);
         //**addNewEvent in EventService has EventRecord type
 
         String newCustomerEmail = "erica.muse.new@mykenzie.snhu.edu";
@@ -139,7 +139,7 @@ class EventControllerTest {
         String customerEmail = "sarah_event_planner@gmail.com";
 
         Event event = new Event(eventId,date,status,customerName,customerEmail);
-        Event persistedEvent = eventService.addNewEvent(String.valueOf(event));
+        Event persistedEvent = eventService.addNewStringEvent(String.valueOf(event));
         //**addNewEvent in EventService has EventRecord type
 
         mvc.perform(delete("/events/{eventId}", persistedEvent.getEventId())
