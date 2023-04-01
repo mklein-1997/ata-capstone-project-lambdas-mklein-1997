@@ -38,23 +38,23 @@ class EventControllerTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-//    @Test
-//    public void getByEventId_Exists() throws Exception {
-//
-//        String event = mockNeat.strings().valStr();
-//
-//        Event persistedEvent = eventService.addNewEvent(event);
-//        //addNewEvent in EventService returns EventRecord instead of String
-//        //original ExampleService file had String type https://tinyurl.com/addNewExample
-//
-//        mvc.perform(get("/events/{eventId}", persistedEvent.getEventId())
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("eventId")
-//                        .isString())
-//                .andExpect(jsonPath("event")
-//                        .value(is(event)))
-//                .andExpect(status().is2xxSuccessful());
-//    }
+    @Test
+    public void getByEventId_Exists() throws Exception {
+
+        String event = mockNeat.strings().valStr();
+
+        Event persistedEvent = eventService.addNewStringEvent(event);
+        //addNewEvent in EventService returns EventRecord instead of String
+        //original ExampleService file had String type https://tinyurl.com/addNewExample
+
+        mvc.perform(get("/event/{eventId}", persistedEvent.getEventId())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("eventId")
+                        .isString())
+                .andExpect(jsonPath("event")
+                        .value(is(event)))
+                .andExpect(status().is2xxSuccessful());
+    }
 
     @Test
     public void createEvent_CreateSuccessful() throws Exception {
@@ -89,65 +89,65 @@ class EventControllerTest {
                 .andExpect(status().is4xxClientError());
     }
 
-//    @Test
-//    public void updateEvent_UpdatesEvent() throws Exception{
-//        String eventId = UUID.randomUUID().toString();
-//        String date = LocalDate.now().toString();
-//        String status = "upcoming";
-//        String customerName = "Erica";
-//        String customerEmail = "erica.muse@mykenzie.snhu.edu";
-//
-//        Event event = new Event(eventId,date,status,customerName,customerEmail);
-//        Event persistedEvent = eventService.addNewEvent(event);
-//        //**addNewEvent in EventService has EventRecord type
-//
-//        String newCustomerEmail = "erica.muse.new@mykenzie.snhu.edu";
-//
-//        CreateEventRequest createEventRequest = new CreateEventRequest();
-//        createEventRequest.setEventId(eventId);
-//        createEventRequest.setDate(Optional.of(date));
-//        createEventRequest.setStatus(Optional.of(status));
-//        createEventRequest.setCustomerName(Optional.of(customerName));
-//        createEventRequest.setCustomerEmail(Optional.of(newCustomerEmail));
-//
-//        mapper.registerModule(new JavaTimeModule());
-//
-//        mvc.perform(put("/events")
-//                .accept(MediaType.APPLICATION_JSON)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(mapper.writeValueAsString(createEventRequest)))
-//
-//                .andExpect(jsonPath("eventId")
-//                        .exists())
-//                .andExpect(jsonPath("date")
-//                        .value(is(date)))
-//                .andExpect(jsonPath("status")
-//                        .value(is(status)))
-//                .andExpect(jsonPath("customerName")
-//                        .value(is(customerName)))
-//                .andExpect(jsonPath("customerEmail")
-//                        .value(is(newCustomerEmail)))
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    public void updateEvent_UpdatesEvent() throws Exception{
+        String eventId = UUID.randomUUID().toString();
+        String date = LocalDate.now().toString();
+        String status = "upcoming";
+        String customerName = "Erica";
+        String customerEmail = "erica.muse@mykenzie.snhu.edu";
 
-//    @Test
-//    public void deleteEvent_DeleteSuccessful() throws Exception{
-//        String eventId = UUID.randomUUID().toString();
-//        String date = LocalDate.now().toString();
-//        String status = "upcoming";
-//        String customerName = "Sarah";
-//        String customerEmail = "sarah_event_planner@gmail.com";
-//
-//        Event event = new Event(eventId,date,status,customerName,customerEmail);
-//        Event persistedEvent = eventService.addNewEvent(event);
-//        //**addNewEvent in EventService has EventRecord type
-//
-//        mvc.perform(delete("/events/{eventId}", persistedEvent.getEventId())
-//                .accept(MediaType.APPLICATION_JSON))
-//
-//                .andExpect(status().isNoContent());
-//                assertThat(eventService.findByEventId(eventId)).isNull();
-//                //EventService needs findByEventId method
-//    }
+        Event event = new Event(eventId,date,status,customerName,customerEmail);
+        Event persistedEvent = eventService.addNewStringEvent(eventId);
+        //**addNewEvent in EventService has EventRecord type
+
+        String newCustomerEmail = "erica.muse.new@mykenzie.snhu.edu";
+
+        CreateEventRequest createEventRequest = new CreateEventRequest();
+        //createEventRequest.setEventId(Optional.of(eventId));
+        createEventRequest.setDate(Optional.of(date));
+        createEventRequest.setStatus(Optional.of(status));
+        createEventRequest.setCustomerName(Optional.of(customerName));
+        createEventRequest.setCustomerEmail(Optional.of(newCustomerEmail));
+
+        mapper.registerModule(new JavaTimeModule());
+
+        mvc.perform(put("/events")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(createEventRequest)))
+
+                .andExpect(jsonPath("eventId")
+                        .exists())
+                .andExpect(jsonPath("date")
+                        .value(is(date)))
+                .andExpect(jsonPath("status")
+                        .value(is(status)))
+                .andExpect(jsonPath("customerName")
+                        .value(is(customerName)))
+                .andExpect(jsonPath("customerEmail")
+                        .value(is(newCustomerEmail)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void deleteEvent_DeleteSuccessful() throws Exception{
+        String eventId = UUID.randomUUID().toString();
+        String date = LocalDate.now().toString();
+        String status = "upcoming";
+        String customerName = "Sarah";
+        String customerEmail = "sarah_event_planner@gmail.com";
+
+        Event event = new Event(eventId,date,status,customerName,customerEmail);
+        Event persistedEvent = eventService.addNewStringEvent(String.valueOf(event));
+        //**addNewEvent in EventService has EventRecord type
+
+        mvc.perform(delete("/events/{eventId}", persistedEvent.getEventId())
+                .accept(MediaType.APPLICATION_JSON))
+
+                .andExpect(status().isNoContent());
+                assertThat(eventService.findEventById(eventId)).isNull();
+                //EventService needs findByEventId method
+    }
 
 }

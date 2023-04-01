@@ -1,5 +1,6 @@
 package com.kenzie.capstone.service.dao;
 
+import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.model.EventData;
 import com.kenzie.capstone.service.model.EventRecord;
 import com.kenzie.capstone.service.model.ExampleData;
@@ -20,6 +21,7 @@ public class EventDao {
 
     /**
      * Allows access to and manipulation of Match objects from the data store.
+     *
      * @param mapper Access to DynamoDB
      */
     public EventDao(DynamoDBMapper mapper) {
@@ -39,6 +41,21 @@ public class EventDao {
 
         return eventData;
     }
+
+    public EventRecord addNewEvent(EventRecord event) {
+        try {
+            mapper.save(event, new DynamoDBSaveExpression()
+                    .withExpected(ImmutableMap.of(
+                            "eventId",
+                            new ExpectedAttributeValue().withExists(false)
+                    )));
+        } catch (ConditionalCheckFailedException e) {
+            throw new InvalidDataException("Event already exists");
+        }
+
+        return event;
+    }
+
 
     public List<EventRecord> getEventData(String eventId) {
         EventRecord eventRecord = new EventRecord();
@@ -73,6 +90,18 @@ public class EventDao {
 
     public Boolean deleteEventData(EventRecord eventId) {
         return true;
+    }
+
+    public List<EventRecord> findByEventId(String eventId) {
+        EventRecord eventRecord = new EventRecord();
+        eventRecord.setEventId(eventId);
+
+        DynamoDBQueryExpression<EventRecord> queryExpression = new DynamoDBQueryExpression<EventRecord>()
+                .withHashKeyValues(eventRecord)
+                .withIndexName("EventIdIndex")
+                .withConsistentRead(false);
+
+        return mapper.query(EventRecord.class, queryExpression);
     }
 }
 
