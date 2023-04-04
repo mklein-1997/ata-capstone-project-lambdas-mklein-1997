@@ -28,24 +28,27 @@ class EventPage extends BaseClass {
 
     async renderEvent() {
         let resultArea = document.getElementById("result-info");
+                const event = this.dataStore.get("event");
 
-        const event = this.dataStore.get("event");
-
-        if (event) {
-            resultArea.innerHTML = `
-                <div>ID: ${event.id}</div>
-                <div>Name: ${event.customerEmail}</div>
-            `
-        } else {
-            resultArea.innerHTML = "No Item";
-        }
+                if (event) {
+                  resultArea.innerHTML = `
+                      <div class="results">
+                        <h4>${event.id}</h4>
+                        <p>Date: ${event.date}</p>
+                        <p>Status: ${event.customerName}</p>
+                        <p>ProductId: ${event.customerEmail}</p>
+                        <p>Customer Name: ${event.status}</p>
+                      </div>
+                  `
+                } else {
+                    resultArea.innerHTML = "No Item";
+                }
     }
 
     // Event Handlers --------------------------------------------------------------------------------------------------
 
-    async onGet(event) {
-        // Prevent the page from refreshing on form submit
-        event.preventDefault();
+    async onGet(e) {
+        e.preventDefault();
 
         let id = document.getElementById("id-field").value;
         this.dataStore.set("event", null);
@@ -59,9 +62,8 @@ class EventPage extends BaseClass {
         }
     }
 
-    async onCreate(event) {
-        // Prevent the page from refreshing on form submit
-        event.preventDefault();
+    async onCreate(e) {
+        e.preventDefault();
         this.dataStore.set("event", null);
 
         let name = document.getElementById("create-name-field").value;
@@ -69,7 +71,7 @@ class EventPage extends BaseClass {
         let email = document.getElementById("create-email-field").value;
         let status = document.getElementById("create-status-field").value;
 
-        const createdEvent = await this.client.createEvent(name,email,date, status, this.errorHandler);
+        const createdEvent = await this.client.createEvent(date, status, name, email, this.errorHandler);
         this.dataStore.set("event", createdExample);
 
         if (createdEvent) {
