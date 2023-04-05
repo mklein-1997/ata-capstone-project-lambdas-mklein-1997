@@ -38,20 +38,21 @@ export default class EventClient extends BaseClass {
      */
     async getEvent(id, errorCallback) {
         try {
-            const response = await this.client.get(`/event/${id}`);
+            const response = await this.client.get(`/events/${id}`);
             return response.data;
         } catch (error) {
             this.handleError("getEvent", error, errorCallback)
         }
     }
 
-    async createEvent(customerName, customerEmail, date, status, errorCallback) {
+    async createEvent(date, status, customerName, customerEmail, errorCallback) {
         try {
             const response = await this.client.post(`events`, {
-                customerName : customerName,
                 date : date,
+                status : status,
+                customerName : customerName,
                 customerEmail : customerEmail,
-                status : status
+
             });
             return response.data;
         } catch (error) {
