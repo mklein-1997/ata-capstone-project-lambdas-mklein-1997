@@ -1,5 +1,7 @@
 package com.kenzie.capstone.service.dao;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDeleteExpression;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.model.EventData;
 import com.kenzie.capstone.service.model.EventRecord;
@@ -89,7 +91,16 @@ public class EventDao {
     }
 
     public Boolean deleteEventData(EventRecord eventId) {
-        return true;
+        try {
+            mapper.delete(eventId, new DynamoDBDeleteExpression()
+                    .withExpected(ImmutableMap.of(
+                            "eventId",
+                            new ExpectedAttributeValue().withExists(true)
+                    )));
+            return true;
+        } catch (ConditionalCheckFailedException e) {
+            return false;
+        }
     }
 
     public List<EventRecord> findByEventId(String eventId) {

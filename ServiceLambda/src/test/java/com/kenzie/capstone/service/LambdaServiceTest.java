@@ -2,6 +2,7 @@ package com.kenzie.capstone.service;
 
 import com.kenzie.capstone.service.dao.EventDao;
 import com.kenzie.capstone.service.dao.ExampleDao;
+import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.model.EventData;
 import com.kenzie.capstone.service.model.EventRecord;
 import com.kenzie.capstone.service.model.ExampleData;
@@ -11,8 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.ArgumentCaptor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -102,5 +105,46 @@ class LambdaServiceTest {
     }
 
     // Write additional tests here
+    @Test
+    void deleteDataTest() {
+        //GIVEN
 
+
+        //WHEN
+
+
+        //THEN
+
+    }
+
+    @Test
+    void deleteData_nullList_throwsInvalidDataException() {
+        //GIVEN
+        List<String> ids = null;
+
+        //WHEN && THEN
+        assertThrows(InvalidDataException.class, () -> this.lambdaService.deleteEventData(ids));
+    }
+
+    @Test
+    void deleteData_nullId_throwsInvalidDataException() {
+        //GIVEN
+        List<String> ids = new ArrayList<>();
+        ids.add(null);
+
+        //WHEN && THEN
+        assertThrows(InvalidDataException.class, () -> this.lambdaService.deleteEventData(ids));
+    }
+
+    @Test
+    void deleteData_daoReturnsFalse_returnsFalse() {
+        //GIVEN
+
+
+        //WHEN
+
+
+        //THEN
+
+    }
 }
