@@ -10,6 +10,9 @@ import com.kenzie.capstone.service.LambdaService;
 import com.kenzie.capstone.service.converter.JsonStringToEventConverter;
 import com.kenzie.capstone.service.dependency.DaggerServiceComponent;
 import com.kenzie.capstone.service.dependency.ServiceComponent;
+import com.kenzie.capstone.service.exceptions.InvalidDataException;
+import com.kenzie.capstone.service.model.EventResponse;
+import com.sun.jdi.request.EventRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,6 +33,18 @@ public class AddEvent  implements RequestHandler<APIGatewayProxyRequestEvent, AP
 
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 
-        return null;
+        try {
+            EventRequest eventRequest = jsonStringToEventConverter.convert(input.getBody());
+
+            EventResponse eventResponse = lambdaService.addEvent((com.kenzie.capstone.service.model.EventRequest) eventRequest);
+            return response
+                    .withStatusCode(200)
+                    .withBody(gson.toJson(eventResponse));
+        } catch (InvalidDataException e) {
+            return response
+                    .withStatusCode(400)
+                    .withBody(gson.toJson(e.errorPayload()));
+        }
     }
+
 }
