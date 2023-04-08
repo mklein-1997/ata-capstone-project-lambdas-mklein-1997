@@ -3,7 +3,7 @@ package com.kenzie.capstone.service.converter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kenzie.capstone.service.exceptions.InvalidDataException;
-import com.sun.jdi.request.EventRequest;
+import com.kenzie.capstone.service.model.EventRequest;
 
 public class JsonStringToEventConverter {
     public EventRequest convert(String body) {
