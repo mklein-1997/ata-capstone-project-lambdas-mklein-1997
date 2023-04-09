@@ -72,26 +72,6 @@ public class EventService {
         return toEventResponse(eventRecord);
 
     }
-
-        public Event addNewStringEvent(String newEvent) {
-            //addNewEvent in EventService returns EventRecord instead of String
-            //original ExampleService file had String type https://tinyurl.com/addNewExample
-
-            EventData dataFromLambda = lambdaServiceClient.setEventData(newEvent);
-
-            EventRecord eventRecord = new EventRecord();
-            eventRecord.setEventId(dataFromLambda.getEventId());
-            eventRecord.setCustomerEmail(dataFromLambda.getData());
-            eventRecord.setDate(dataFromLambda.getData());
-            eventRecord.setStatus(dataFromLambda.getData());
-            eventRecord.setCustomerName(dataFromLambda.getData());
-            eventRepository.save(eventRecord);
-
-            return new Event(dataFromLambda.getEventId(), newEvent);
-        }
-
-
-
     public EventResponse update(String id, Event event) {
         Optional<EventRecord> eventRecords = eventRepository.findById(id);
         if(eventRecords.isEmpty()) {
@@ -110,6 +90,8 @@ public class EventService {
     public void deleteEvent(String id) {
         if(id != null){
             eventRepository.deleteById(id);
+        }else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Event Not Found");
         }
     }
 

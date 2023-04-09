@@ -1,0 +1,188 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > LambdaService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.kenzie.capstone.service</a>
+</div>
+
+<h1>Coverage Summary for Class: LambdaService (com.kenzie.capstone.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LambdaService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (15/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    96.4%
+  </span>
+  <span class="absValue">
+    (27/28)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.kenzie.capstone.service;
+&nbsp;
+&nbsp;import com.kenzie.capstone.service.converter.EventConverter;
+&nbsp;import com.kenzie.capstone.service.exceptions.InvalidDataException;
+&nbsp;import com.kenzie.capstone.service.dao.EventDao;
+&nbsp;import com.kenzie.capstone.service.model.EventData;
+&nbsp;import com.kenzie.capstone.service.model.EventRecord;
+&nbsp;import com.kenzie.capstone.service.model.EventRequest;
+&nbsp;import com.kenzie.capstone.service.model.EventResponse;
+&nbsp;
+&nbsp;import javax.inject.Inject;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.UUID;
+&nbsp;
+&nbsp;public class LambdaService {
+&nbsp;    //original LambdaService file https://tinyurl.com/LambdaService
+&nbsp;
+&nbsp;    private final EventDao eventDao;
+&nbsp;
+&nbsp;    @Inject
+<b class="fc">&nbsp;    public LambdaService(EventDao eventDao) {</b>
+<b class="fc">&nbsp;        this.eventDao = eventDao;</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    public EventResponse addEvent(EventRequest event) {
+<b class="pc">&nbsp;        if (event == null || event.getEventId() == null || event.getCustomerName().length() == 0) {</b>
+<b class="fc">&nbsp;            throw new InvalidDataException(&quot;Request must contain a valid Customer Name&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        EventRecord record = EventConverter.fromRequestToRecord(event);</b>
+<b class="fc">&nbsp;        eventDao.addNewEvent(record);</b>
+<b class="fc">&nbsp;        return EventConverter.fromRecordToResponse(record);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public EventData getEventData(String eventId) {
+<b class="fc">&nbsp;        List&lt;EventRecord&gt; records = eventDao.getEventData(eventId);</b>
+<b class="fc">&nbsp;        if (records.size() &gt; 0) {</b>
+<b class="fc">&nbsp;            return new EventData(records.get(0).getEventId(), records.get(0).getData());</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public EventData setEventData(String data) {
+<b class="fc">&nbsp;        String eventId = UUID.randomUUID().toString();</b>
+&nbsp;        //changed id to eventId
+<b class="fc">&nbsp;        EventRecord eventRecord = eventDao.setEventData(eventId, data);</b>
+<b class="fc">&nbsp;        return new EventData(eventId, data);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Boolean deleteEventData(List&lt;String&gt; eventIds) {
+<b class="fc">&nbsp;        boolean allDeleted = true;</b>
+&nbsp;
+<b class="fc">&nbsp;        if(eventIds == null){</b>
+<b class="fc">&nbsp;            throw new InvalidDataException(&quot;Request must contain a valid list of Event Id&#39;s&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        for(String eventId : eventIds){</b>
+<b class="pc">&nbsp;            if(eventId == null || eventId.length() == 0){</b>
+<b class="fc">&nbsp;                throw new InvalidDataException(&quot;Event ID cannot be null or empty to delete&quot;);</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            EventRecord record = new EventRecord();</b>
+<b class="fc">&nbsp;            record.setEventId(eventId);</b>
+&nbsp;
+<b class="fc">&nbsp;            boolean deleted = eventDao.deleteEventData(record);</b>
+&nbsp;
+<b class="pc">&nbsp;            if(!deleted){</b>
+<b class="nc">&nbsp;                allDeleted = false;</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return allDeleted;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-09 16:53</div>
+</div>
+</body>
+</html>

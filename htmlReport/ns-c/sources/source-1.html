@@ -1,0 +1,226 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > EventDao</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.kenzie.capstone.service.dao</a>
+</div>
+
+<h1>Coverage Summary for Class: EventDao (com.kenzie.capstone.service.dao)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EventDao</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/46)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">EventDao$$EnhancerByMockitoWithCGLIB$$f633cc2a</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/46)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.kenzie.capstone.service.dao;
+&nbsp;
+&nbsp;import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDeleteExpression;
+&nbsp;import com.kenzie.capstone.service.exceptions.InvalidDataException;
+&nbsp;import com.kenzie.capstone.service.model.EventData;
+&nbsp;import com.kenzie.capstone.service.model.EventRecord;
+&nbsp;
+&nbsp;import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+&nbsp;import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+&nbsp;import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
+&nbsp;import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
+&nbsp;import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
+&nbsp;import com.google.common.collect.ImmutableMap;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public class EventDao {
+&nbsp;    private final DynamoDBMapper mapper;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Allows access to and manipulation of Match objects from the data store.
+&nbsp;     *
+&nbsp;     * @param mapper Access to DynamoDB
+&nbsp;     */
+<b class="nc">&nbsp;    public EventDao(DynamoDBMapper mapper) {</b>
+<b class="nc">&nbsp;        this.mapper = mapper;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    public EventData storeEventData(EventData eventData) {
+&nbsp;        try {
+<b class="nc">&nbsp;            mapper.save(eventData, new DynamoDBSaveExpression()</b>
+<b class="nc">&nbsp;                    .withExpected(ImmutableMap.of(</b>
+&nbsp;                            &quot;eventId&quot;,
+<b class="nc">&nbsp;                            new ExpectedAttributeValue().withExists(false)</b>
+&nbsp;                    )));
+<b class="nc">&nbsp;        } catch (ConditionalCheckFailedException e) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;event id has already been used&quot;);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return eventData;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void addNewEvent(EventRecord event) {
+&nbsp;        try {
+<b class="nc">&nbsp;            mapper.save(event, new DynamoDBSaveExpression()</b>
+<b class="nc">&nbsp;                    .withExpected(ImmutableMap.of(</b>
+&nbsp;                            &quot;eventId&quot;,
+<b class="nc">&nbsp;                            new ExpectedAttributeValue().withExists(false)</b>
+&nbsp;                    )));
+<b class="nc">&nbsp;        } catch (ConditionalCheckFailedException e) {</b>
+<b class="nc">&nbsp;            throw new InvalidDataException(&quot;Event already exists&quot;);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    public List&lt;EventRecord&gt; getEventData(String eventId) {
+<b class="nc">&nbsp;        EventRecord eventRecord = new EventRecord();</b>
+&nbsp;        //Rename this to eventId
+<b class="nc">&nbsp;        eventRecord.setEventId(eventId);</b>
+&nbsp;
+<b class="nc">&nbsp;        DynamoDBQueryExpression&lt;EventRecord&gt; queryExpression = new DynamoDBQueryExpression&lt;EventRecord&gt;()</b>
+<b class="nc">&nbsp;                .withHashKeyValues(eventRecord)</b>
+<b class="nc">&nbsp;                .withConsistentRead(false);</b>
+&nbsp;
+<b class="nc">&nbsp;        return mapper.query(EventRecord.class, queryExpression);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public EventRecord setEventData(String eventId, String data) {
+<b class="nc">&nbsp;        EventRecord eventRecord = new EventRecord();</b>
+&nbsp;        //Rename this to eventId
+<b class="nc">&nbsp;        eventRecord.setEventId(eventId);</b>
+<b class="nc">&nbsp;        eventRecord.setData(data);</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            mapper.save(eventRecord, new DynamoDBSaveExpression()</b>
+<b class="nc">&nbsp;                    .withExpected(ImmutableMap.of(</b>
+&nbsp;                            &quot;eventId&quot;,
+<b class="nc">&nbsp;                            new ExpectedAttributeValue().withExists(false)</b>
+&nbsp;                    )));
+<b class="nc">&nbsp;        } catch (ConditionalCheckFailedException e) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;event id already exists&quot;);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return eventRecord;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Boolean deleteEventData(EventRecord eventId) {
+&nbsp;        try {
+<b class="nc">&nbsp;            mapper.delete(eventId, new DynamoDBDeleteExpression()</b>
+<b class="nc">&nbsp;                    .withExpected(ImmutableMap.of(</b>
+&nbsp;                            &quot;eventId&quot;,
+<b class="nc">&nbsp;                            new ExpectedAttributeValue().withExists(true)</b>
+&nbsp;                    )));
+<b class="nc">&nbsp;            return true;</b>
+<b class="nc">&nbsp;        } catch (ConditionalCheckFailedException e) {</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;EventRecord&gt; findByEventId(String eventId) {
+<b class="nc">&nbsp;        EventRecord eventRecord = new EventRecord();</b>
+<b class="nc">&nbsp;        eventRecord.setEventId(eventId);</b>
+&nbsp;
+<b class="nc">&nbsp;        DynamoDBQueryExpression&lt;EventRecord&gt; queryExpression = new DynamoDBQueryExpression&lt;EventRecord&gt;()</b>
+<b class="nc">&nbsp;                .withHashKeyValues(eventRecord)</b>
+<b class="nc">&nbsp;                .withIndexName(&quot;EventIdIndex&quot;)</b>
+<b class="nc">&nbsp;                .withConsistentRead(false);</b>
+&nbsp;
+<b class="nc">&nbsp;        return mapper.query(EventRecord.class, queryExpression);</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-09 16:53</div>
+</div>
+</body>
+</html>

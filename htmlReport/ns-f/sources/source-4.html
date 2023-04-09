@@ -1,0 +1,176 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > SetEventData</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.kenzie.capstone.service.lambda</a>
+</div>
+
+<h1>Coverage Summary for Class: SetEventData (com.kenzie.capstone.service.lambda)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SetEventData</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/25)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.kenzie.capstone.service.lambda;
+&nbsp;
+&nbsp;import com.kenzie.capstone.service.LambdaService;
+&nbsp;import com.kenzie.capstone.service.dependency.ServiceComponent;
+&nbsp;import com.kenzie.capstone.service.model.EventData;
+&nbsp;import com.kenzie.capstone.service.dependency.DaggerServiceComponent;
+&nbsp;
+&nbsp;import com.amazonaws.services.lambda.runtime.Context;
+&nbsp;import com.amazonaws.services.lambda.runtime.RequestHandler;
+&nbsp;import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+&nbsp;import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+&nbsp;import com.google.gson.Gson;
+&nbsp;import com.google.gson.GsonBuilder;
+&nbsp;import org.apache.logging.log4j.LogManager;
+&nbsp;import org.apache.logging.log4j.Logger;
+&nbsp;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.Map;
+&nbsp;
+<b class="nc">&nbsp;public class SetEventData implements RequestHandler&lt;APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent&gt; {</b>
+&nbsp;
+<b class="nc">&nbsp;    static final Logger log = LogManager.getLogger();</b>
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent input, Context context) {
+<b class="nc">&nbsp;        GsonBuilder builder = new GsonBuilder();</b>
+<b class="nc">&nbsp;        Gson gson = builder.create();</b>
+&nbsp;
+<b class="nc">&nbsp;        log.info(gson.toJson(input));</b>
+&nbsp;
+<b class="nc">&nbsp;        ServiceComponent serviceComponent = DaggerServiceComponent.create();</b>
+<b class="nc">&nbsp;        LambdaService lambdaService = serviceComponent.provideLambdaService();</b>
+<b class="nc">&nbsp;        Map&lt;String, String&gt; headers = new HashMap&lt;&gt;();</b>
+<b class="nc">&nbsp;        headers.put(&quot;Content-Type&quot;, &quot;application/json&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent()</b>
+<b class="nc">&nbsp;                .withHeaders(headers);</b>
+&nbsp;
+<b class="nc">&nbsp;        String data = input.getBody();</b>
+&nbsp;
+<b class="nc">&nbsp;        if (data == null || data.length() == 0) {</b>
+<b class="nc">&nbsp;            return response</b>
+<b class="nc">&nbsp;                    .withStatusCode(400)</b>
+<b class="nc">&nbsp;                    .withBody(&quot;data is invalid&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            EventData eventData = lambdaService.setEventData(data);</b>
+<b class="nc">&nbsp;            String output = gson.toJson(eventData);</b>
+&nbsp;
+<b class="nc">&nbsp;            return response</b>
+<b class="nc">&nbsp;                    .withStatusCode(200)</b>
+<b class="nc">&nbsp;                    .withBody(output);</b>
+&nbsp;
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            return response</b>
+<b class="nc">&nbsp;                    .withStatusCode(400)</b>
+<b class="nc">&nbsp;                    .withBody(gson.toJson(e.getMessage()));</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-09 16:53</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,210 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > EventController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.kenzie.appserver.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: EventController (com.kenzie.appserver.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EventController</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/29)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.kenzie.appserver.controller;
+&nbsp;
+&nbsp;import com.kenzie.appserver.controller.model.CreateEventRequest;
+&nbsp;import com.kenzie.appserver.controller.model.EventResponse;
+&nbsp;import com.kenzie.appserver.repositories.model.EventRecord;
+&nbsp;import com.kenzie.appserver.service.EventService;
+&nbsp;
+&nbsp;import com.kenzie.appserver.service.model.Event;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import org.springframework.web.server.ResponseStatusException;
+&nbsp;
+&nbsp;import java.net.URI;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.Date;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;import java.util.UUID;
+&nbsp;
+&nbsp;import static java.util.UUID.randomUUID;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/events&quot;)
+&nbsp;public class EventController {
+&nbsp;
+&nbsp;    private final EventService eventService;
+&nbsp;
+<b class="nc">&nbsp;    EventController(EventService service) {</b>
+&nbsp;        //Rename it to avoid confusion and any possible bugs
+<b class="nc">&nbsp;        this.eventService = service;</b>
+&nbsp;    }
+&nbsp;    @GetMapping(&quot;/all&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;EventResponse&gt;&gt; getAllEvents() {
+<b class="nc">&nbsp;        List&lt;EventResponse&gt; events = eventService.findAllEvents();</b>
+<b class="nc">&nbsp;        if (events == null || events.isEmpty()) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.noContent().build();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return ResponseEntity.ok(events);</b>
+&nbsp;    }
+&nbsp;    @GetMapping(&quot;/{eventId}&quot;)
+&nbsp;    public ResponseEntity&lt;EventResponse&gt; searchEventById(@PathVariable(&quot;eventId&quot;) String eventId) {
+<b class="nc">&nbsp;        EventResponse response = eventService.findEventById(eventId);</b>
+<b class="nc">&nbsp;        if (response == null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.notFound().build();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return ResponseEntity.ok(response);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;    @PostMapping
+&nbsp;    public ResponseEntity&lt;EventResponse&gt; addNewEvent(@RequestBody CreateEventRequest createEvent) {
+&nbsp;
+<b class="nc">&nbsp;        String date = createEvent.getDate();</b>
+&nbsp;
+<b class="nc">&nbsp;       Event event = new Event(UUID.randomUUID().toString(), createEvent.getCustomerName(), createEvent.getCustomerEmail(), date , &quot;Event Created&quot;);</b>
+<b class="nc">&nbsp;       EventResponse response = eventService.addNewEvent(event);</b>
+&nbsp;
+<b class="nc">&nbsp;        return ResponseEntity.created(URI.create(&quot;/events/&quot; + response.getEventId())).body(response);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;/{eventId}&quot;)
+&nbsp;    public ResponseEntity&lt;EventResponse&gt; updateEvent(@PathVariable(&quot;eventId&quot;) String eventId, @RequestBody CreateEventRequest createEvent) {
+<b class="nc">&nbsp;        Event event = new Event(eventId, createEvent.getCustomerName(), createEvent.getCustomerEmail(), createEvent.getDate(), &quot;Event Updated&quot;);</b>
+<b class="nc">&nbsp;        EventResponse response = eventService.update(eventId, event);</b>
+<b class="nc">&nbsp;        if (response == null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.notFound().build();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return ResponseEntity.ok(response);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/{eventId}&quot;)
+&nbsp;    public ResponseEntity&lt;EventResponse&gt; deleteEventById(@PathVariable(&quot;eventId&quot;) String eventId) {
+<b class="nc">&nbsp;        eventService.deleteEvent(eventId);</b>
+<b class="nc">&nbsp;        return ResponseEntity.noContent().build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private EventResponse convertToResponse(EventRecord event){
+<b class="nc">&nbsp;        EventResponse response = new EventResponse();</b>
+<b class="nc">&nbsp;        response.setEventId(event.getEventId());</b>
+<b class="nc">&nbsp;        response.setDate(event.getDate());</b>
+<b class="nc">&nbsp;        response.setStatus(event.getStatus());</b>
+<b class="nc">&nbsp;        response.setCustomerName(event.getCustomerName());</b>
+<b class="nc">&nbsp;        response.setCustomerEmail(event.getCustomerEmail());</b>
+<b class="nc">&nbsp;        return response;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+&nbsp;    @ExceptionHandler({ResponseStatusException.class})
+&nbsp;    public void handleNotFound() {
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-09 16:53</div>
+</div>
+</body>
+</html>
