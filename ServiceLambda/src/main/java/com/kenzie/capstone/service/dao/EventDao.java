@@ -1,12 +1,9 @@
 package com.kenzie.capstone.service.dao;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDeleteExpression;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.model.EventData;
 import com.kenzie.capstone.service.model.EventRecord;
-import com.kenzie.capstone.service.model.ExampleData;
-import com.kenzie.capstone.service.model.ExampleRecord;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
@@ -15,11 +12,10 @@ import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.google.common.collect.ImmutableMap;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class EventDao {
-    private DynamoDBMapper mapper;
+    private final DynamoDBMapper mapper;
 
     /**
      * Allows access to and manipulation of Match objects from the data store.
@@ -44,7 +40,7 @@ public class EventDao {
         return eventData;
     }
 
-    public EventRecord addNewEvent(EventRecord event) {
+    public void addNewEvent(EventRecord event) {
         try {
             mapper.save(event, new DynamoDBSaveExpression()
                     .withExpected(ImmutableMap.of(
@@ -55,7 +51,6 @@ public class EventDao {
             throw new InvalidDataException("Event already exists");
         }
 
-        return event;
     }
 
 

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,25 +24,13 @@ import static java.util.UUID.randomUUID;
 @RequestMapping("/events")
 public class EventController {
 
-    private EventService eventService;
+    private final EventService eventService;
 
     EventController(EventService service) {
         //Rename it to avoid confusion and any possible bugs
         this.eventService = service;
     }
-
-    @PostMapping
-    public ResponseEntity<EventResponse> addNewEvent(@RequestBody CreateEventRequest createEvent) {
-        //EventId is not needed here because it is auto generated in the Event class
-        //String id = UUID.randomUUID().toString();
-
-        Event event = new Event(createEvent.getCustomerName().get(), createEvent.getCustomerEmail().get(), createEvent.getDate().get(), createEvent.getStatus().get());
-
-        EventResponse response = eventService.addNewEvent(event);
-        return ResponseEntity.created(URI.create("/events/" + response.getEventId())).body(response);
-    }
-
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<EventResponse>> getAllEvents() {
         List<EventResponse> events = eventService.findAllEvents();
         if (events == null || events.isEmpty()) {
@@ -49,20 +39,41 @@ public class EventController {
 
         return ResponseEntity.ok(events);
     }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<EventResponse> searchEventById(@PathVariable("id") String eventId) {
+    @GetMapping("/{eventId}")
+    public ResponseEntity<EventResponse> searchEventById(@PathVariable("eventId") String eventId) {
         EventResponse response = eventService.findEventById(eventId);
         if (response == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(response);
+
+    }
+    @PostMapping
+    public ResponseEntity<EventResponse> addNewEvent(@RequestBody CreateEventRequest createEvent) {
+
+        String date = LocalDate.now().toString();
+
+       Event event = new Event(UUID.randomUUID().toString(), createEvent.getCustomerName(), createEvent.getCustomerEmail(), date , "Event Created");
+       EventResponse response = eventService.addNewEvent(event);
+
+        return ResponseEntity.created(URI.create("/events/" + response.getEventId())).body(response);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteEventById(@PathVariable("id") String eventId) {
+    @PutMapping("/{eventId}")
+    public ResponseEntity<EventResponse> updateEvent(@PathVariable("eventId") String eventId, @RequestBody CreateEventRequest createEvent) {
+        Event event = new Event(createEvent.getCustomerName(), createEvent.getCustomerEmail(), createEvent.getDate(), "Event Updated");
+        EventResponse response = eventService.update(eventId, event);
+        return ResponseEntity.ok(response);
+    }
+
+
+
+
+
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<EventResponse> deleteEventById(@PathVariable("eventId") String eventId) {
         eventService.deleteEvent(eventId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     private EventResponse convertToResponse(EventRecord event){
@@ -73,6 +84,11 @@ public class EventController {
         response.setCustomerName(event.getCustomerName());
         response.setCustomerEmail(event.getCustomerEmail());
         return response;
+    }
+
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    @ExceptionHandler({ResponseStatusException.class})
+    public void handleNotFound() {
     }
 
 }

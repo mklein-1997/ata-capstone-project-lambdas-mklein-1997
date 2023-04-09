@@ -8,7 +8,7 @@ import static java.util.UUID.randomUUID;
 public class Event {
     private String eventId;
     private String customerName;
-    private String eventDate;
+    private String date;
     private String eventStatus;
     private String customerEmail;
 //
@@ -33,7 +33,7 @@ public class Event {
         this.eventId = eventId;
         this.customerName = name;
         this.customerEmail = email;
-        this.eventDate = date;
+        this.date = date;
         this.eventStatus = status;
     }
 
@@ -56,11 +56,11 @@ public class Event {
     }
 
     public String getEventDate() {
-        return eventDate;
+        return date;
     }
 
     public void setEventDate(String eventDate) {
-        this.eventDate = eventDate;
+        this.date = eventDate;
     }
 
     public String getEventStatus() {
@@ -84,19 +84,19 @@ public class Event {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Event event = (Event) o;
-        return Objects.equals(eventId, event.eventId) && Objects.equals(customerName, event.customerName) && Objects.equals(eventDate, event.eventDate) && Objects.equals(eventStatus, event.eventStatus) && Objects.equals(customerEmail, event.customerEmail);
+        return Objects.equals(eventId, event.eventId) && Objects.equals(customerName, event.customerName) && Objects.equals(date, event.date) && Objects.equals(eventStatus, event.eventStatus) && Objects.equals(customerEmail, event.customerEmail);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(eventId, customerName, eventDate, eventStatus, customerEmail);
+        return Objects.hash(eventId, customerName, date, eventStatus, customerEmail);
     }
 
     @Override
     public String toString(){
         return "EventResponse{" +
                 "eventId='" + eventId + '\'' +
-                ", date='" + eventDate + '\'' +
+                ", date='" + date + '\'' +
                 ", status=" + eventStatus + '\'' +
                 ", customerName=" + customerName + '\'' +
                 ", customerEmail=" + customerEmail +

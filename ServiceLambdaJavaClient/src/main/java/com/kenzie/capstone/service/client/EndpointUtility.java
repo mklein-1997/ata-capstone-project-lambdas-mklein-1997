@@ -28,10 +28,9 @@ import java.util.regex.Pattern;
 
 
 public class EndpointUtility {
-    private String apiEndpoint;
 
     public EndpointUtility() {
-        this.apiEndpoint = getApiEndpint();
+        String apiEndpoint = getApiEndpint();
     }
     
     /*

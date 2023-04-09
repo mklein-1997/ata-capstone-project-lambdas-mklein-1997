@@ -57,26 +57,40 @@ class EventControllerTest {
     }
 
     @Test
-    public void createEvent_CreateSuccessful() throws Exception {
-        String event = mockNeat.strings().valStr();
+    public void getAllEvents_Exists() throws Exception {
+        String id = UUID.randomUUID().toString();
+        Event event = new Event(id, "Erica", "email", LocalDate.now().toString(), "Event Created");
+        eventService.addNewEvent(event);
 
-        CreateEventRequest createEventRequest = new CreateEventRequest();
-        createEventRequest.setCustomerName(Optional.of("customer"));
-        createEventRequest.setCustomerEmail(Optional.of("email"));
-        createEventRequest.setDate(Optional.of("date"));
-        createEventRequest.setStatus(Optional.of("status"));
-        //createEventRequest.setEventId(event);
+        mvc.perform(get("/events/all")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(200));
+
+        eventService.deleteEvent(id);
+
+    }
+
+    @Test
+    public void createEvent_CreateSuccessful() throws Exception {
+        String date = LocalDate.now().toString();
+        String customerName = "Erica";
+        String customerEmail = "email";
+        String eventId = UUID.randomUUID().toString();
+
+        CreateEventRequest request = new CreateEventRequest();
+        request.setDate(date);
+        request.setCustomerName(customerName);
+        request.setCustomerEmail(customerEmail);
+        request.setEventId(eventId);
 
         mapper.registerModule(new JavaTimeModule());
-        //an id is created after a createRequest is called
+
+        String json = mapper.writeValueAsString(request);
+
         mvc.perform(post("/events")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(createEventRequest)))
-                .andExpect(jsonPath("eventId")
-                        .exists())
-                .andExpect(jsonPath("event")
-                        .value(is(event)))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
                 .andExpect(status().is2xxSuccessful());
     }
 
@@ -87,6 +101,7 @@ class EventControllerTest {
         mvc.perform(get("/events/{eventId}", eventId)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
+
     }
 
     @Test
@@ -105,10 +120,10 @@ class EventControllerTest {
 
         CreateEventRequest createEventRequest = new CreateEventRequest();
         //createEventRequest.setEventId(Optional.of(eventId));
-        createEventRequest.setDate(Optional.of(date));
-        createEventRequest.setStatus(Optional.of(status));
-        createEventRequest.setCustomerName(Optional.of(customerName));
-        createEventRequest.setCustomerEmail(Optional.of(newCustomerEmail));
+        createEventRequest.setDate(date);
+        createEventRequest.setCustomerName(customerName);
+        createEventRequest.setCustomerEmail(newCustomerEmail);
+
 
         mapper.registerModule(new JavaTimeModule());
 

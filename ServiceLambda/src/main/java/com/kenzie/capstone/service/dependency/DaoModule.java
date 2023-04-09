@@ -2,7 +2,6 @@ package com.kenzie.capstone.service.dependency;
 
 
 import com.kenzie.capstone.service.dao.EventDao;
-import com.kenzie.capstone.service.dao.ExampleDao;
 import com.kenzie.capstone.service.util.DynamoDbClientProvider;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
