@@ -24,6 +24,7 @@ font-family: 'Edu NSW ACT Foundation', cursive;
 
 .header {
     /* Flexbox: https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
+    fonr-family:sans-serif;
     font-family: 'Dancing Script', cursive;
     min-height:20vh;
     /*background-color: var(--secondary-color);*/
@@ -141,4 +142,9 @@ textarea{
 
 .state.active {
     display: block;
+}
+
+#result-info{
+font-size:1.4rem;
+text-align:center;
 }

@@ -33,11 +33,11 @@ class EventPage extends BaseClass {
                 if (event) {
                   resultArea.innerHTML = `
                       <div class="results">
-                        <h4>${event.id}</h4>
+                        <p>ID: ${event.eventId}</p>
                         <p>Date: ${event.date}</p>
-                        <p>Status: ${event.customerName}</p>
-                        <p>ProductId: ${event.customerEmail}</p>
-                        <p>Customer Name: ${event.status}</p>
+                        <p>Name: ${event.customerName}</p>
+                        <p>Email: ${event.customerEmail}</p>
+                        <p>Status: ${event.status}</p>
                       </div>
                   `
                 } else {
@@ -72,7 +72,7 @@ class EventPage extends BaseClass {
         let status = document.getElementById("create-status-field").value;
 
         const createdEvent = await this.client.createEvent(date, status, name, email, this.errorHandler);
-        this.dataStore.set("event", createdExample);
+        this.dataStore.set("event", createdEvent);
 
         if (createdEvent) {
             this.showMessage(`Created ${createdEvent.date}!`)
