@@ -51,7 +51,7 @@ public class EventController {
     @PostMapping
     public ResponseEntity<EventResponse> addNewEvent(@RequestBody CreateEventRequest createEvent) {
 
-        String date = LocalDate.now().toString();
+        String date = createEvent.getDate();
 
        Event event = new Event(UUID.randomUUID().toString(), createEvent.getCustomerName(), createEvent.getCustomerEmail(), date , "Event Created");
        EventResponse response = eventService.addNewEvent(event);
@@ -61,13 +61,14 @@ public class EventController {
 
     @PutMapping("/{eventId}")
     public ResponseEntity<EventResponse> updateEvent(@PathVariable("eventId") String eventId, @RequestBody CreateEventRequest createEvent) {
-        Event event = new Event(createEvent.getCustomerName(), createEvent.getCustomerEmail(), createEvent.getDate(), "Event Updated");
+        Event event = new Event(eventId, createEvent.getCustomerName(), createEvent.getCustomerEmail(), createEvent.getDate(), "Event Updated");
         EventResponse response = eventService.update(eventId, event);
+        if (response == null) {
+            return ResponseEntity.notFound().build();
+        }
+
         return ResponseEntity.ok(response);
     }
-
-
-
 
 
     @DeleteMapping("/{eventId}")

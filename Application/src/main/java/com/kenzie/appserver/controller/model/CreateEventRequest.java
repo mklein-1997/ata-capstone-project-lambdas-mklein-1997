@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDate;
 
 public class CreateEventRequest {
     @NotEmpty
@@ -28,11 +29,8 @@ public class CreateEventRequest {
     public String getEventId() {
         return eventId;
     }
-    public void setDate(String date) {
-        this.date = date;
-    }
     public String getDate() {
-        return date;
+        return LocalDate.now().toString();
     }
 
     public void setCustomerName(String customerName) {
