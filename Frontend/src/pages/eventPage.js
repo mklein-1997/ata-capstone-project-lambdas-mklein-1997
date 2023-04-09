@@ -33,7 +33,7 @@ class EventPage extends BaseClass {
                 if (event) {
                   resultArea.innerHTML = `
                       <div class="results">
-                        <h4>ID: ${event.eventId}</h4>
+                        <p>ID: ${event.eventId}</p>
                         <p>Date: ${event.date}</p>
                         <p>CustumerName: ${event.customerName}</p>
                         <p>CustomerEmail: ${event.customerEmail}</p>
