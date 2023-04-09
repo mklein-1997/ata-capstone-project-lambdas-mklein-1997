@@ -3,10 +3,10 @@ Resources:
     Type: AWS::DynamoDB::Table
     Properties:
       "AttributeDefinitions":
-        - "AttributeName": "EventId"
+        - "AttributeName": "eventId"
           "AttributeType": "S"
       "KeySchema":
-        - "AttributeName": "EventId"
+        - "AttributeName": "eventId"
           "KeyType": "HASH"
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: false
