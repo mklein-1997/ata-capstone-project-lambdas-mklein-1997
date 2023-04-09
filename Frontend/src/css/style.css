@@ -142,3 +142,8 @@ textarea{
 .state.active {
     display: block;
 }
+
+#result-info{
+font-size:1.4rem;
+text-align:center;
+}
