@@ -16,7 +16,7 @@ import java.util.UUID;
 public class LambdaService {
     //original LambdaService file https://tinyurl.com/LambdaService
 
-    private EventDao eventDao;
+    private final EventDao eventDao;
 
     @Inject
     public LambdaService(EventDao eventDao) {

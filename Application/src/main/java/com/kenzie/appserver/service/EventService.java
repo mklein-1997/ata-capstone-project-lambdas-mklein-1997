@@ -68,7 +68,7 @@ public class EventService {
         EventRecord eventRecord = toEventRecord(event);
 
         eventRepository.save(eventRecord);
-        lambdaServiceClient.setEventData(eventRecord.getEventId());
+//        lambdaServiceClient.setEventData(eventRecord.getEventId());
         return toEventResponse(eventRecord);
 
     }
@@ -87,8 +87,7 @@ public class EventService {
             eventRecord.setCustomerName(dataFromLambda.getData());
             eventRepository.save(eventRecord);
 
-            Event event = new Event(dataFromLambda.getEventId(), newEvent);
-            return event;
+            return new Event(dataFromLambda.getEventId(), newEvent);
         }
 
 

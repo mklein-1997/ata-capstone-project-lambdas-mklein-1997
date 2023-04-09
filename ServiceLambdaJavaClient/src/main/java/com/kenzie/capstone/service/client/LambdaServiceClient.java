@@ -9,11 +9,11 @@ import java.util.List;
 
 public class LambdaServiceClient {
 
-    private static final String GET_EVENT_ENDPOINT = "events/{eventId}";
-    private static final String SET_EVENT_ENDPOINT = "events";
-    private static final String DELETE_EVENT_ENDPOINT = "events/delete";
+    private static final String GET_EVENT_ENDPOINT = "/events/eventId";
+    private static final String SET_EVENT_ENDPOINT = "/events/";
+    private static final String DELETE_EVENT_ENDPOINT = "/events/eventId";
 
-    private ObjectMapper mapper;
+    private final ObjectMapper mapper;
 
     public LambdaServiceClient() {
         this.mapper = new ObjectMapper();
@@ -21,7 +21,7 @@ public class LambdaServiceClient {
 
     public EventData getEventData(String eventId) {
         EndpointUtility endpointUtility = new EndpointUtility();
-        String response = endpointUtility.getEndpoint(GET_EVENT_ENDPOINT.replace("{eventId}", eventId));
+        String response = endpointUtility.getEndpoint(GET_EVENT_ENDPOINT.replace("eventId", eventId));
         EventData eventData;
         try {
             eventData = mapper.readValue(response, EventData.class);
