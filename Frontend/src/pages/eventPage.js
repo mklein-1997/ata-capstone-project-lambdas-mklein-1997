@@ -35,8 +35,8 @@ class EventPage extends BaseClass {
                       <div class="results">
                         <p>ID: ${event.eventId}</p>
                         <p>Date: ${event.date}</p>
-                        <p>CustumerName: ${event.customerName}</p>
-                        <p>CustomerEmail: ${event.customerEmail}</p>
+                        <p>Name: ${event.customerName}</p>
+                        <p>Email: ${event.customerEmail}</p>
                         <p>Status: ${event.status}</p>
                       </div>
                   `
