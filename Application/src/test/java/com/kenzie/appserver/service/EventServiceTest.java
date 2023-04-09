@@ -225,4 +225,10 @@ public class EventServiceTest {
         assertThrows(ResponseStatusException.class, () -> eventService.update(id, event));
 
     }
+
+    @Test
+    void deleteEventNullId_throwsNullPointerException(){
+        //THEN
+        assertThrows(ResponseStatusException.class, () -> eventService.deleteEvent(null));
+    }
 }

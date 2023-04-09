@@ -4,6 +4,8 @@ import com.kenzie.capstone.service.dao.EventDao;
 import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.model.EventData;
 import com.kenzie.capstone.service.model.EventRecord;
+import com.kenzie.capstone.service.model.EventRequest;
+import com.kenzie.capstone.service.model.EventResponse;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -105,13 +107,19 @@ class LambdaServiceTest {
     @Test
     void deleteDataTest() {
         //GIVEN
+        List<String> ids = new ArrayList<>();
+        ids.add("fakeid");
 
+        EventRecord record = new EventRecord();
+        record.setEventId("fakeid");
 
         //WHEN
-
+        when(eventDao.deleteEventData(record)).thenReturn(true);
+        boolean response = this.lambdaService.deleteEventData(ids);
 
         //THEN
-
+        verify(eventDao, times(1)).deleteEventData(record);
+        assertTrue(response);
     }
 
     @Test
@@ -144,4 +152,59 @@ class LambdaServiceTest {
         //THEN
 
     }
+
+    @Test
+    void addNewEvent_Test() {
+        //GIVEN
+        EventRequest eventRequest = new EventRequest();
+        eventRequest.setEventId("fakeid");
+        eventRequest.setDate("2021-01-01");
+        eventRequest.setCustomerEmail("fakeemail");
+        eventRequest.setCustomerName("fakename");
+
+        //WHEN
+        EventResponse response = this.lambdaService.addEvent(eventRequest);
+
+        //THEN
+        assertNotNull(response);
+        assertEquals("fakeid", response.getEventId());
+        assertEquals("2021-01-01", response.getDate());
+        assertEquals("fakeemail", response.getCustomerEmail());
+        assertEquals("fakename", response.getCustomerName());
+    }
+
+    @Test
+    void addNewEvent_nullEventRequest_throwsInvalidDataException() {
+        //GIVEN
+
+        //WHEN && THEN
+        assertThrows(InvalidDataException.class, () -> this.lambdaService.addEvent(null));
+    }
+
+    @Test
+    void addNewEvent_nullEventId_throwsInvalidDataException() {
+        //GIVEN
+        EventRequest eventRequest = new EventRequest();
+        eventRequest.setEventId(null);
+        eventRequest.setDate("2021-01-01");
+        eventRequest.setCustomerEmail("fakeemail");
+        eventRequest.setCustomerName("fakename");
+
+        //WHEN && THEN
+        assertThrows(InvalidDataException.class, () -> this.lambdaService.addEvent(eventRequest));
+    }
+
+    @Test
+    void addNewEvent_invalidName_throwsInvalidDataException() {
+        //GIVEN
+        EventRequest eventRequest = new EventRequest();
+        eventRequest.setEventId(null);
+        eventRequest.setDate("2021-01-01");
+        eventRequest.setCustomerEmail("fakeemail");
+        eventRequest.setCustomerName("");
+
+        //WHEN && THEN
+        assertThrows(InvalidDataException.class, () -> this.lambdaService.addEvent(eventRequest));
+    }
+
 }

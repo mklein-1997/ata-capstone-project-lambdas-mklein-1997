@@ -1,0 +1,204 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > EventRecord</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.kenzie.capstone.service.model</a>
+</div>
+
+<h1>Coverage Summary for Class: EventRecord (com.kenzie.capstone.service.model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EventRecord</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    93.3%
+  </span>
+  <span class="absValue">
+    (14/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (9/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    96.2%
+  </span>
+  <span class="absValue">
+    (25/26)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.kenzie.capstone.service.model;
+&nbsp;
+&nbsp;import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+&nbsp;import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+&nbsp;import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+&nbsp;
+&nbsp;import java.util.Objects;
+&nbsp;
+&nbsp;    @DynamoDBTable(tableName = &quot;Events&quot;)
+<b class="fc">&nbsp;    public class EventRecord {</b>
+&nbsp;
+&nbsp;        private String eventId;
+&nbsp;        private String date;
+&nbsp;        private String status;
+&nbsp;        private String customerName;
+&nbsp;        private String customerEmail;
+&nbsp;
+&nbsp;        private String data;
+&nbsp;
+&nbsp;        @DynamoDBHashKey(attributeName = &quot;eventId&quot;)
+&nbsp;        public String getEventId() {
+<b class="fc">&nbsp;            return eventId;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        @DynamoDBAttribute(attributeName = &quot;date&quot;)
+&nbsp;        public String getDate() {
+<b class="fc">&nbsp;            return date;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        @DynamoDBAttribute(attributeName = &quot;status&quot;)
+&nbsp;        public String getStatus() {
+<b class="fc">&nbsp;            return status;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        @DynamoDBAttribute(attributeName = &quot;customerName&quot;)
+&nbsp;        public String getCustomerName() {
+<b class="fc">&nbsp;            return customerName;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        @DynamoDBAttribute(attributeName = &quot;customerEmail&quot;)
+&nbsp;        public String getCustomerEmail() {
+<b class="fc">&nbsp;            return customerEmail;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        @DynamoDBAttribute(attributeName = &quot;data&quot;)
+&nbsp;        public String getData() {
+<b class="fc">&nbsp;            return data;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        public void setData(String data) {
+<b class="fc">&nbsp;            this.data = data;</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        public void setEventId(String eventId) {
+<b class="fc">&nbsp;            this.eventId = eventId;</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        public void setDate(String date) {
+<b class="fc">&nbsp;            this.date = date;</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        public void setStatus(String status) {
+<b class="fc">&nbsp;            this.status = status;</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        public void setCustomerName(String customerName) {
+<b class="fc">&nbsp;            this.customerName = customerName;</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        public void setCustomerEmail(String customerEmail) {
+<b class="fc">&nbsp;            this.customerEmail = customerEmail;</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        @Override
+&nbsp;        public boolean equals(Object o) {
+<b class="pc">&nbsp;            if (this == o) return true;</b>
+<b class="pc">&nbsp;            if (o == null || getClass() != o.getClass()) return false;</b>
+<b class="fc">&nbsp;            EventRecord that = (EventRecord) o;</b>
+<b class="pc">&nbsp;            return Objects.equals(eventId, that.eventId) &amp;&amp; Objects.equals(date, that.date) &amp;&amp; Objects.equals(status,</b>
+<b class="pc">&nbsp;                    that.status) &amp;&amp; Objects.equals(customerName, that.customerName) &amp;&amp; Objects.equals(customerEmail,</b>
+<b class="pc">&nbsp;                    that.customerEmail) &amp;&amp; Objects.equals(data,</b>
+&nbsp;                    that.data);
+&nbsp;        }
+&nbsp;
+&nbsp;        @Override
+&nbsp;        public int hashCode() {
+<b class="nc">&nbsp;            return Objects.hash(eventId, date, status, customerName, customerEmail, data);</b>
+&nbsp;        }
+&nbsp;    }
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-09 16:53</div>
+</div>
+</body>
+</html>
