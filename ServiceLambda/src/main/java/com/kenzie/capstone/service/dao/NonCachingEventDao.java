@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
-public class NonCachingEventDao implements EventDaoInterface {
+public class NonCachingEventDao implements EventDao {
     private DynamoDBMapper mapper;
 
     static final Logger log = LogManager.getLogger();
@@ -25,7 +25,7 @@ public class NonCachingEventDao implements EventDaoInterface {
     public NonCachingEventDao(DynamoDBMapper mapper) {
         this.mapper = mapper;
     }
-
+    @Override
     public LambdaEventRecord addEvent(LambdaEventRecord event) {
         try {
             mapper.save(event, new DynamoDBSaveExpression()
@@ -40,6 +40,21 @@ public class NonCachingEventDao implements EventDaoInterface {
         return event;
     }
 
+    @Override
+    public LambdaEventRecord updateEvent(LambdaEventRecord record) {
+        try {
+            mapper.save(record, new DynamoDBSaveExpression()
+                    .withExpected(ImmutableMap.of(
+                            "eventId",
+                            new ExpectedAttributeValue().withExists(true)
+                    )));
+            return record;
+        } catch (ConditionalCheckFailedException e) {
+            throw new InvalidDataException("Event already exists");
+        }
+    }
+
+    @Override
     public boolean deleteEvent(LambdaEventRecord event) {
         try {
             mapper.delete(event, new DynamoDBDeleteExpression()
@@ -55,7 +70,7 @@ public class NonCachingEventDao implements EventDaoInterface {
 
         return true;
     }
-
+    @Override
     public List<LambdaEventRecord> findByEventId(String eventId) {
         LambdaEventRecord eventRecord = new LambdaEventRecord();
         eventRecord.setEventId(eventId);
@@ -67,7 +82,7 @@ public class NonCachingEventDao implements EventDaoInterface {
 
         return mapper.query(LambdaEventRecord.class, queryExpression);
     }
-
+    @Override
     public List<LambdaEventRecord> findUsersWithoutEventId() {
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
                 .withFilterExpression("attribute_not_exists(EventId)");

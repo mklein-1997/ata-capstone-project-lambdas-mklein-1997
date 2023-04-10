@@ -1,6 +1,7 @@
 package com.kenzie.capstone.service.caching;
 
 import com.kenzie.capstone.service.dependency.DaggerServiceComponent;
+import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import redis.clients.jedis.Jedis;
 
 import java.util.Optional;
@@ -12,9 +13,7 @@ public class CacheClient {
     public void setValue(String key, int seconds, String value) {
         // Check for non-null key
         // Set the value in the cache
-        if (key == null) {
-            throw new IllegalArgumentException();
-        }
+        checkNonNullKey(key);
         Jedis cache = DaggerServiceComponent.create().provideJedis();
         cache.setex(key, seconds, value);
         cache.close();
@@ -23,9 +22,7 @@ public class CacheClient {
     public Optional<String> getValue(String key) {
         // Check for non-null key
         // Retrieves the Optional values from the cache
-        if (key == null) {
-            throw new IllegalArgumentException();
-        }
+        checkNonNullKey(key);
         Jedis cache = DaggerServiceComponent.create().provideJedis();
         Optional<String> obj = Optional.ofNullable(cache.get(key));
         cache.close();
@@ -36,9 +33,7 @@ public class CacheClient {
     public void invalidate(String key) {
         // Check for non-null key
         // Delete the key
-        if (key == null) {
-            throw new IllegalArgumentException();
-        }
+        checkNonNullKey(key);
         Jedis cache = DaggerServiceComponent.create().provideJedis();
         cache.del(key);
         cache.close();
@@ -47,7 +42,7 @@ public class CacheClient {
         // Ensure the key isn't null
         // What should you do if the key *is* null?
         if (key == null) {
-            throw new IllegalArgumentException();
+            throw new InvalidDataException("Null key passed into cache");
         }
     }
 
