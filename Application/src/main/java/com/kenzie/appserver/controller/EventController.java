@@ -4,7 +4,6 @@ import com.kenzie.appserver.controller.model.CreateEventRequest;
 import com.kenzie.appserver.controller.model.EventResponse;
 import com.kenzie.appserver.repositories.model.EventRecord;
 import com.kenzie.appserver.service.EventService;
-
 import com.kenzie.appserver.service.model.Event;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,13 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-
-import static java.util.UUID.randomUUID;
 
 @RestController
 @RequestMapping("/events")
@@ -53,7 +47,7 @@ public class EventController {
 
         String date = createEvent.getDate();
 
-       Event event = new Event(UUID.randomUUID().toString(), createEvent.getCustomerName(), createEvent.getCustomerEmail(), date , "Event Created");
+       Event event = new Event(UUID.randomUUID().toString(), createEvent.getCustomerName(), createEvent.getCustomerEmail(), date , createEvent.getStatus());
        EventResponse response = eventService.addNewEvent(event);
 
         return ResponseEntity.created(URI.create("/events/" + response.getEventId())).body(response);
@@ -61,7 +55,7 @@ public class EventController {
 
     @PutMapping("/{eventId}")
     public ResponseEntity<EventResponse> updateEvent(@PathVariable("eventId") String eventId, @RequestBody CreateEventRequest createEvent) {
-        Event event = new Event(eventId, createEvent.getCustomerName(), createEvent.getCustomerEmail(), createEvent.getDate(), "Event Updated");
+        Event event = new Event(eventId, createEvent.getCustomerName(), createEvent.getCustomerEmail(), createEvent.getDate(), createEvent.getStatus());
         EventResponse response = eventService.update(eventId, event);
         if (response == null) {
             return ResponseEntity.notFound().build();
