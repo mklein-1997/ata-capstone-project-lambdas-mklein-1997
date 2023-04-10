@@ -211,4 +211,33 @@ class LambdaServiceTest {
         assertThrows(InvalidDataException.class, () -> this.lambdaService.addEvent(eventRequest));
     }
 
+    @Test
+    void updateEvent_Test() {
+        //GIVEN
+        LambdaEventRequest eventRequest = new LambdaEventRequest();
+        eventRequest.setEventId("fakeid");
+        eventRequest.setDate("2021-01-01");
+        eventRequest.setCustomerEmail("fakeemail");
+        eventRequest.setCustomerName("fakename");
+
+
+        //WHEN
+        LambdaEventResponse response = this.lambdaService.updateEvent(eventRequest);
+
+        //THEN
+        assertNotNull(response);
+        assertEquals("fakeid", response.getEventId());
+        assertEquals("2021-01-01", response.getDate());
+        assertEquals("fakeemail", response.getCustomerEmail());
+        assertEquals("fakename", response.getCustomerName());
+    }
+
+    @Test
+    void updateEvent_nullEventRequest_throwsInvalidDataException() {
+        //GIVEN
+
+        //WHEN && THEN
+        assertThrows(InvalidDataException.class, () -> this.lambdaService.updateEvent(null));
+    }
+
 }
