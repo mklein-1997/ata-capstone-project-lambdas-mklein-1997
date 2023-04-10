@@ -20,7 +20,6 @@ public class EventController {
     private final EventService eventService;
 
     EventController(EventService service) {
-        //Rename it to avoid confusion and any possible bugs
         this.eventService = service;
     }
     @GetMapping("/all")
