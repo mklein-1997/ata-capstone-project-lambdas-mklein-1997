@@ -7,7 +7,6 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.kenzie.capstone.service.caching.CacheClient;
-import com.kenzie.capstone.service.dao.NonCachingEventDao;
 import com.kenzie.capstone.service.model.LambdaEventRecord;
 
 import javax.inject.Inject;
@@ -17,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CachingEventDao implements EventDaoInterface{
+public class CachingEventDao implements EventDao {
     private static final int EVENT_READ_TTL = 60 * 60;
     private static final String EVENT_KEY = "EventKey::%s";
 

@@ -1,9 +1,8 @@
 package com.kenzie.capstone.service;
 
 import com.kenzie.capstone.service.converter.EventConverter;
-import com.kenzie.capstone.service.dao.EventDaoInterface;
-import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.dao.EventDao;
+import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.model.EventData;
 import com.kenzie.capstone.service.model.LambdaEventRecord;
 import com.kenzie.capstone.service.model.LambdaEventRequest;
@@ -17,10 +16,10 @@ import java.util.List;
 public class LambdaService {
     //original LambdaService file https://tinyurl.com/LambdaService
 
-    private final EventDaoInterface eventDao;
+    private final EventDao eventDao;
 
     @Inject
-    public LambdaService(EventDaoInterface eventDao) {
+    public LambdaService(EventDao eventDao) {
         this.eventDao = eventDao;
     }
 

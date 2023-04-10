@@ -70,13 +70,13 @@ class LambdaServiceTest {
         record.setCustomerEmail(email);
         record.setDate(date);
 
-        when(eventDao.getEventData(id)).thenReturn(List.of(record));
+        when(eventDao.findByEventId(id)).thenReturn(List.of(record));
 
         // WHEN
         EventData response = this.lambdaService.getEventData(id);
 
         // THEN
-        verify(eventDao, times(1)).getEventData(idCaptor.capture());
+        verify(eventDao, times(1)).findByEventId(idCaptor.capture());
 
         assertEquals(id, idCaptor.getValue(), "The correct id is used");
 
@@ -91,13 +91,13 @@ class LambdaServiceTest {
 
         //GIVEN
         String id = "fakeid";
-        when(eventDao.getEventData(id)).thenReturn(Collections.emptyList());
+        when(eventDao.findByEventId(id)).thenReturn(Collections.emptyList());
 
         //WHEN
         EventData response = this.lambdaService.getEventData(id);
 
         //THEN
-        verify(eventDao, times(1)).getEventData(idCaptor.capture());
+        verify(eventDao, times(1)).findByEventId(idCaptor.capture());
 
         assertEquals(id, idCaptor.getValue(), "The correct id is used");
         assertNull(response, "The response should be null when an empty list is returned");
@@ -114,11 +114,11 @@ class LambdaServiceTest {
         record.setEventId("fakeid");
 
         //WHEN
-        when(eventDao.deleteEventData(record)).thenReturn(true);
+        when(eventDao.deleteEvent(record)).thenReturn(true);
         boolean response = this.lambdaService.deleteEventData(ids);
 
         //THEN
-        verify(eventDao, times(1)).deleteEventData(record);
+        verify(eventDao, times(1)).deleteEvent(record);
         assertTrue(response);
     }
 
@@ -149,11 +149,11 @@ class LambdaServiceTest {
         record.setEventId("fakeid");
 
         //WHEN
-        when(eventDao.deleteEventData(record)).thenReturn(false);
+        when(eventDao.deleteEvent(record)).thenReturn(false);
         boolean response = this.lambdaService.deleteEventData(ids);
 
         //THEN
-        verify(eventDao, times(1)).deleteEventData(record);
+        verify(eventDao, times(1)).deleteEvent(record);
         assertFalse(response);
     }
 

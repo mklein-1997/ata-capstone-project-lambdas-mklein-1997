@@ -4,7 +4,6 @@ package com.kenzie.capstone.service.dependency;
 import com.kenzie.capstone.service.caching.CacheClient;
 import com.kenzie.capstone.service.dao.CachingEventDao;
 import com.kenzie.capstone.service.dao.EventDao;
-import com.kenzie.capstone.service.dao.EventDaoInterface;
 import com.kenzie.capstone.service.dao.NonCachingEventDao;
 import com.kenzie.capstone.service.util.DynamoDbClientProvider;
 
@@ -39,9 +38,9 @@ public class DaoModule {
 
     @Singleton
     @Provides
-    @Named("EventDaoInterface")
+    @Named("EventDao")
     @Inject
-    public EventDaoInterface provideEventDao(
+    public EventDao provideEventDao(
             @Named("CacheClient")CacheClient cacheClient,
             @Named("NonCachingEventDao")NonCachingEventDao nonCachingEventDao) {
         return new CachingEventDao(cacheClient, nonCachingEventDao);
