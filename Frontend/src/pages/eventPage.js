@@ -5,11 +5,12 @@ import EventClient from "../api/eventClient";
 /**
  * Logic needed for the view playlist page of the website.
  */
+
 class EventPage extends BaseClass {
 
     constructor() {
         super();
-        this.bindClassMethods(['onGet', 'onCreate', 'renderEvent'], this);
+        this.bindClassMethods(['onGet', 'onCreate', 'renderEvent', 'onDelete'], this);
         this.dataStore = new DataStore();
     }
 
@@ -19,21 +20,23 @@ class EventPage extends BaseClass {
     async mount() {
         document.getElementById('get-by-id-form').addEventListener('submit', this.onGet);
         document.getElementById('create-form').addEventListener('submit', this.onCreate);
+        document.getElementById('delete-form').addEventListener('submit', this.onDelete);
         this.client = new EventClient();
 
-        this.dataStore.addChangeListener(this.renderEvent)
+        //this.dataStore.addChangeListener(this.renderEvent)
     }
 
     // Render Methods --------------------------------------------------------------------------------------------------
 
-    async renderEvent() {
+    async renderEvent(mess) {
         let resultArea = document.getElementById("result-info");
                 const event = this.dataStore.get("event");
 
                 if (event) {
                   resultArea.innerHTML = `
                       <div class="results">
-                        <p>ID: ${event.eventId}</p>
+                      <h2>${mess}</h2>
+                        <p>Id: ${event.eventId}</p>
                         <p>Date: ${event.date}</p>
                         <p>Name: ${event.customerName}</p>
                         <p>Email: ${event.customerEmail}</p>
@@ -60,7 +63,23 @@ class EventPage extends BaseClass {
         } else {
             this.errorHandler("Error doing GET!  Try again...");
         }
+        this.renderEvent("Event Retrieved");
     }
+
+    async onDelete(e) {
+            e.preventDefault();
+
+            let id = document.getElementById("delete-id-field").value;
+            this.dataStore.set("event", null);
+
+            let result = await this.client.deleteEvent(id, this.errorHandler);
+            if (result) {
+                this.showMessage(`Deleted`)
+                document.getElementById("delete-result").innerHTML = id + " Deleted!";
+            } else {
+                this.errorHandler("Error doing Delete!  Try again...");
+            }
+        }
 
     async onCreate(e) {
         e.preventDefault();
@@ -79,6 +98,7 @@ class EventPage extends BaseClass {
         } else {
             this.errorHandler("Error creating!  Try again...");
         }
+        this.renderEvent("Event Created");
     }
 }
 

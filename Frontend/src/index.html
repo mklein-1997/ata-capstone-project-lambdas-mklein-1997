@@ -39,6 +39,9 @@
             </div>
         </form>
     </div>
+    <div class="card" id="result">
+        <p id="result-info"></p>
+    </div>
     <div class="card">
         <h2>Get By ID</h2>
         <form class="card-content" id="get-by-id-form">
@@ -51,10 +54,18 @@
             </div>
         </form>
     </div>
-    <div class="card" id="result">
-        <h2>Result:</h2>
-        <p id="result-info"></p>
+   <div class="card">
+        <h2>Delete an Event</h2>
+        <form class="card-content" id="delete-form">
+            <p class="form-field">
+                <label>ID</label>
+                <input type="text" required class="validated-field" id="delete-id-field">
+            </p>
+            <div id="delete-result"></div>
+            <div class="btn-container">
+                <button type="submit">Delete</button>
+            </div>
+        </form>
     </div>
-
 </body>
 </html>
