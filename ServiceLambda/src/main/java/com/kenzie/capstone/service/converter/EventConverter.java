@@ -1,16 +1,12 @@
 package com.kenzie.capstone.service.converter;
 
-import com.kenzie.capstone.service.model.Event;
-import com.kenzie.capstone.service.model.EventRecord;
-import com.kenzie.capstone.service.model.EventRequest;
-import com.kenzie.capstone.service.model.EventResponse;
-
+import com.kenzie.capstone.service.model.*;
 
 
 public class EventConverter {
 
-    public static EventRecord fromRequestToRecord(EventRequest event) {
-        EventRecord record = new EventRecord();
+    public static LambdaEventRecord fromRequestToRecord(LambdaEventRequest event) {
+        LambdaEventRecord record = new LambdaEventRecord();
         record.setEventId(event.getEventId());
         record.setCustomerName(event.getCustomerName());
         record.setCustomerEmail(event.getCustomerEmail());
@@ -19,8 +15,8 @@ public class EventConverter {
         return record;
     }
 
-    public static EventResponse fromRecordToResponse(EventRecord record) {
-        EventResponse eventResponse = new EventResponse();
+    public static LambdaEventResponse fromRecordToResponse(LambdaEventRecord record) {
+        LambdaEventResponse eventResponse = new LambdaEventResponse();
         eventResponse.setEventId(record.getEventId());
         eventResponse.setCustomerName(record.getCustomerName());
         eventResponse.setCustomerEmail(record.getCustomerEmail());
@@ -29,8 +25,8 @@ public class EventConverter {
         return eventResponse;
     }
 
-    public static Event fromRecordToReferral(EventRecord record) {
-        Event event = new Event();
+    public static EventData fromRecordToReferral(LambdaEventRecord record) {
+        EventData event = new EventData();
         event.setEventId(record.getEventId());
         event.setEventDate(record.getDate());
         event.setEventStatus(record.getStatus());

@@ -3,6 +3,8 @@ package com.kenzie.capstone.service.client;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kenzie.capstone.service.model.EventData;
+import com.kenzie.capstone.service.model.LambdaEventRequest;
+import com.kenzie.capstone.service.model.LambdaEventResponse;
 
 import java.util.List;
 
@@ -10,8 +12,9 @@ import java.util.List;
 public class LambdaServiceClient {
 
     private static final String GET_EVENT_ENDPOINT = "/events/eventId";
-    private static final String SET_EVENT_ENDPOINT = "/events/";
+    private static final String ADD_EVENT_ENDPOINT = "/events/";
     private static final String DELETE_EVENT_ENDPOINT = "/events/eventId";
+    private static final String UPDATE_EVENT_ENDPOINT = "/events/eventId";
 
     private final ObjectMapper mapper;
 
@@ -31,16 +34,40 @@ public class LambdaServiceClient {
         return eventData;
     }
 
-    public EventData setEventData(String data) {
+    public LambdaEventResponse addEvent(LambdaEventRequest eventRequest) {
         EndpointUtility endpointUtility = new EndpointUtility();
-        String response = endpointUtility.postEndpoint(SET_EVENT_ENDPOINT, data);
-        EventData eventData;
+        String request;
         try {
-            eventData = mapper.readValue(response, EventData.class);
+            request = mapper.writeValueAsString(eventRequest);
+        } catch(JsonProcessingException e) {
+            throw new ApiGatewayException("Unable to serialize request: " + e);
+        }
+        String response = endpointUtility.postEndpoint(ADD_EVENT_ENDPOINT, request);
+        LambdaEventResponse eventResponse;
+        try {
+            eventResponse = mapper.readValue(response, LambdaEventResponse.class);
         } catch (Exception e) {
             throw new ApiGatewayException("Unable to map deserialize JSON: " + e);
         }
-        return eventData;
+        return eventResponse;
+    }
+
+    public LambdaEventResponse updateEvent(LambdaEventRequest eventRequest) {
+        EndpointUtility endpointUtility = new EndpointUtility();
+        String request;
+        try {
+            request = mapper.writeValueAsString(eventRequest);
+        } catch(JsonProcessingException e) {
+            throw new ApiGatewayException("Unable to serialize request: " + e);
+        }
+        String response = endpointUtility.putEndpoint(UPDATE_EVENT_ENDPOINT.replace("eventId", eventRequest.getEventId()), request);
+        LambdaEventResponse eventResponse;
+        try {
+            eventResponse = mapper.readValue(response, LambdaEventResponse.class);
+        } catch (Exception e) {
+            throw new ApiGatewayException("Unable to map deserialize JSON: " + e);
+        }
+        return eventResponse;
     }
 
     public boolean deleteEventData(List<String> eventIds) {

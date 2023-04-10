@@ -4,9 +4,9 @@ import com.kenzie.capstone.service.converter.EventConverter;
 import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.dao.EventDao;
 import com.kenzie.capstone.service.model.EventData;
-import com.kenzie.capstone.service.model.EventRecord;
-import com.kenzie.capstone.service.model.EventRequest;
-import com.kenzie.capstone.service.model.EventResponse;
+import com.kenzie.capstone.service.model.LambdaEventRecord;
+import com.kenzie.capstone.service.model.LambdaEventRequest;
+import com.kenzie.capstone.service.model.LambdaEventResponse;
 
 import javax.inject.Inject;
 
@@ -23,28 +23,31 @@ public class LambdaService {
         this.eventDao = eventDao;
     }
 
-    public EventResponse addEvent(EventRequest event) {
+    public LambdaEventResponse addEvent(LambdaEventRequest event) {
         if (event == null || event.getEventId() == null || event.getCustomerName().length() == 0) {
             throw new InvalidDataException("Request must contain a valid Customer Name");
         }
-        EventRecord record = EventConverter.fromRequestToRecord(event);
+        LambdaEventRecord record = EventConverter.fromRequestToRecord(event);
         eventDao.addNewEvent(record);
         return EventConverter.fromRecordToResponse(record);
     }
 
     public EventData getEventData(String eventId) {
-        List<EventRecord> records = eventDao.getEventData(eventId);
+        List<LambdaEventRecord> records = eventDao.getEventData(eventId);
         if (records.size() > 0) {
-            return new EventData(records.get(0).getEventId(), records.get(0).getData());
+            return new EventData(records.get(0).getEventId(), records.get(0).getCustomerName(),
+                    records.get(0).getCustomerEmail(), records.get(0).getDate(), records.get(0).getStatus());
         }
         return null;
     }
 
-    public EventData setEventData(String data) {
-        String eventId = UUID.randomUUID().toString();
-        //changed id to eventId
-        EventRecord eventRecord = eventDao.setEventData(eventId, data);
-        return new EventData(eventId, data);
+    public LambdaEventResponse updateEvent(LambdaEventRequest event) {
+        if (event == null || event.getEventId() == null || event.getCustomerName().length() == 0) {
+            throw new InvalidDataException("Request must contain a valid Customer Name");
+        }
+        LambdaEventRecord record = EventConverter.fromRequestToRecord(event);
+        eventDao.updateEvent(record);
+        return EventConverter.fromRecordToResponse(record);
     }
 
     public Boolean deleteEventData(List<String> eventIds) {
@@ -59,7 +62,7 @@ public class LambdaService {
                 throw new InvalidDataException("Event ID cannot be null or empty to delete");
             }
 
-            EventRecord record = new EventRecord();
+            LambdaEventRecord record = new LambdaEventRecord();
             record.setEventId(eventId);
 
             boolean deleted = eventDao.deleteEventData(record);
