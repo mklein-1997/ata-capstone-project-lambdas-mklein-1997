@@ -25,13 +25,4 @@ public class EventConverter {
         return eventResponse;
     }
 
-    public static EventData fromRecordToReferral(LambdaEventRecord record) {
-        EventData event = new EventData();
-        event.setEventId(record.getEventId());
-        event.setEventDate(record.getDate());
-        event.setEventStatus(record.getStatus());
-        event.setCustomerEmail(record.getCustomerEmail());
-        event.setCustomerName(record.getCustomerName());
-        return event;
-    }
 }

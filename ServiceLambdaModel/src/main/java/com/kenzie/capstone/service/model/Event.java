@@ -1,9 +1,7 @@
 package com.kenzie.capstone.service.model;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static java.util.UUID.randomUUID;
 
 public class Event {
     private String eventId;
@@ -11,23 +9,6 @@ public class Event {
     private String date;
     private String eventStatus;
     private String customerEmail;
-//
-//    //Three constructors, dependent on how we're creating new events. We can delete one in the future
-//    public Event(String name, String email) {
-//        this.eventId = randomUUID().toString();
-//        this.customerName = name;
-//        this.customerEmail = email;
-//        this.eventDate = LocalDateTime.now().toString();
-//        this.eventStatus = "active"; //placeholder until I know what keywords we're using
-//    }
-//
-//    public Event(String name, String email, String date, String status) {
-//        this.eventId = randomUUID().toString();
-//        this.customerName = name;
-//        this.customerEmail = email;
-//        this.eventDate = date;
-//        this.eventStatus = status;
-//    }
 
     public Event(String eventId, String name, String email, String date, String status) {
         this.eventId = eventId;

@@ -2,24 +2,19 @@ package com.kenzie.appserver.controller;
 
 import com.kenzie.appserver.IntegrationTest;
 import com.kenzie.appserver.controller.model.CreateEventRequest;
-import com.kenzie.appserver.controller.model.EventResponse;
-import com.kenzie.appserver.repositories.model.EventRecord;
 import com.kenzie.appserver.service.EventService;
 import com.kenzie.appserver.service.model.Event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import net.andreinc.mockneat.MockNeat;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.UUID;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -33,8 +28,6 @@ class EventControllerTest {
 
     @Autowired
     EventService eventService;
-
-    private final MockNeat mockNeat = MockNeat.threadLocal();
 
     private final ObjectMapper mapper = new ObjectMapper();
 

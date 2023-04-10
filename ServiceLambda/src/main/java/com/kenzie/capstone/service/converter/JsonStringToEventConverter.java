@@ -10,8 +10,7 @@ public class JsonStringToEventConverter {
         try {
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
-            LambdaEventRequest referralRequest = gson.fromJson(body, LambdaEventRequest.class);
-            return referralRequest;
+            return gson.fromJson(body, LambdaEventRequest.class);
         } catch (Exception e) {
             throw new InvalidDataException("Referral could not be deserialized");
         }
