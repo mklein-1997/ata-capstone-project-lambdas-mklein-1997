@@ -113,7 +113,7 @@ class EventControllerTest {
         String customerName = "Sarah";
         String customerEmail = "email";
 
-        Event event = new Event(eventId,date,status,customerName,customerEmail);
+        Event event = new Event(eventId,customerName,customerEmail,date,status);
         eventService.addNewEvent(event);
 
         CreateEventRequest request = new CreateEventRequest();
@@ -133,6 +133,7 @@ class EventControllerTest {
                 .andExpect(jsonPath("$.customerName", is("Shara Smith")))
                 .andExpect(jsonPath("$.customerEmail", is("shara@email.com")))
                 .andExpect(status().is2xxSuccessful());
+        eventService.deleteEvent(eventId);
     }
 
     @Test
@@ -143,7 +144,7 @@ class EventControllerTest {
         String customerName = "Fiona";
         String customerEmail = "Fiona&Shrek@forver.after.com";
 
-        Event event = new Event(eventId,date,status,customerName,customerEmail);
+        Event event = new Event(eventId,customerName,customerEmail,date,status);
         eventService.addNewEvent(event);
 
         mvc.perform(delete("/events/{eventId}", eventId)

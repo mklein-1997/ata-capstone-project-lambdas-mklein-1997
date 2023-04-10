@@ -68,8 +68,7 @@ public class EventService {
         EventRecord eventRecord = toEventRecord(event);
 
         eventRepository.save(eventRecord);
-
-        lambdaServiceClient.addEvent(recordToLambdaRequest(eventRecord));
+        //lambdaServiceClient.addEvent(recordToLambdaRequest(eventRecord));
         return toEventResponse(eventRecord);
     }
     public EventResponse update(String id, Event event) {
