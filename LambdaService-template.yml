@@ -30,13 +30,37 @@ Resources:
           Properties:
             Path: /events/{eventId}
             Method: get
-  SetEventDataFunction:
+  UpdateEventFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
-      Handler: com.kenzie.capstone.service.lambda.SetEventData
+      Handler: com.kenzie.capstone.service.lambda.UpdateEvent
       Runtime: java11
-      Description: Set Event Data
+      Description: Update Event Data
+      MemorySize: 512
+      Timeout: 240
+      # Function's execution role
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambda_ReadOnlyAccess
+        - AWSXrayWriteOnlyAccess
+        - AWSLambdaVPCAccessExecutionRole
+        - AmazonS3FullAccess
+        - AmazonDynamoDBFullAccess
+      Tracing: Active
+      Events:
+        UpdateResource:
+          Type: Api
+          Properties:
+            Path: /events/{eventId}
+            Method: put
+  AddEventFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
+      Handler: com.kenzie.capstone.service.lambda.AddEvent
+      Runtime: java11
+      Description: Add New Event
       MemorySize: 512
       Timeout: 240
       # Function's execution role
@@ -54,4 +78,28 @@ Resources:
           Properties:
             Path: /events
             Method: post
+  DeleteEventDataFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
+      Handler: com.kenzie.capstone.service.lambda.DeleteEventData
+      Runtime: java11
+      Description: Delete Event Data
+      MemorySize: 512
+      Timeout: 240
+      # Function's execution role
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambda_ReadOnlyAccess
+        - AWSXrayWriteOnlyAccess
+        - AWSLambdaVPCAccessExecutionRole
+        - AmazonS3FullAccess
+        - AmazonDynamoDBFullAccess
+      Tracing: Active
+      Events:
+        UpdateResource:
+          Type: Api
+          Properties:
+            Path: /events/{eventId}
+            Method: delete
 
