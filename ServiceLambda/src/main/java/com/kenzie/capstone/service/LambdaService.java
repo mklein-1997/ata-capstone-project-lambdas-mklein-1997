@@ -11,7 +11,7 @@ import com.kenzie.capstone.service.model.LambdaEventResponse;
 import javax.inject.Inject;
 
 import java.util.List;
-import java.util.UUID;
+
 
 public class LambdaService {
     //original LambdaService file https://tinyurl.com/LambdaService

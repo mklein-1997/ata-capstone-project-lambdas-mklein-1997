@@ -7,7 +7,6 @@ import com.kenzie.appserver.service.model.Event;
 
 
 import com.kenzie.capstone.service.client.LambdaServiceClient;
-import com.kenzie.capstone.service.model.EventData;
 import com.kenzie.capstone.service.model.LambdaEventRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -86,16 +85,12 @@ public class EventService {
         eventRecord.setStatus(event.getEventStatus());
         eventRecord = eventRepository.save(eventRecord);
 
-        //lambdaServiceClient.updateEvent(recordToLambdaRequest(eventRecord));
         return toEventResponse(eventRecord);
     }
 
     public void deleteEvent(String id) {
         if(id != null){
             eventRepository.deleteById(id);
-            List<String> ids = new ArrayList<>();
-            ids.add(id);
-            //lambdaServiceClient.deleteEventData(ids);
         }else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Event Not Found");
         }

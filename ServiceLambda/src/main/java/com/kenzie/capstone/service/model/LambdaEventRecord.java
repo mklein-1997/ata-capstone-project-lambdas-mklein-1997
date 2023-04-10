@@ -15,8 +15,6 @@ import java.util.Objects;
         private String customerName;
         private String customerEmail;
 
-        private String data;
-
         @DynamoDBHashKey(attributeName = "eventId")
         public String getEventId() {
             return eventId;
@@ -42,14 +40,6 @@ import java.util.Objects;
             return customerEmail;
         }
 
-        @DynamoDBAttribute(attributeName = "data")
-        public String getData() {
-            return data;
-        }
-
-        public void setData(String data) {
-            this.data = data;
-        }
 
         public void setEventId(String eventId) {
             this.eventId = eventId;
@@ -78,12 +68,11 @@ import java.util.Objects;
             LambdaEventRecord that = (LambdaEventRecord) o;
             return Objects.equals(eventId, that.eventId) && Objects.equals(date, that.date) && Objects.equals(status,
                     that.status) && Objects.equals(customerName, that.customerName) && Objects.equals(customerEmail,
-                    that.customerEmail) && Objects.equals(data,
-                    that.data);
+                    that.customerEmail);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(eventId, date, status, customerName, customerEmail, data);
+            return Objects.hash(eventId, date, status, customerName, customerEmail);
         }
     }

@@ -2,7 +2,6 @@ package com.kenzie.appserver.controller;
 
 import com.kenzie.appserver.controller.model.CreateEventRequest;
 import com.kenzie.appserver.controller.model.EventResponse;
-import com.kenzie.appserver.repositories.model.EventRecord;
 import com.kenzie.appserver.service.EventService;
 import com.kenzie.appserver.service.model.Event;
 import org.springframework.http.HttpStatus;
@@ -69,16 +68,6 @@ public class EventController {
     public ResponseEntity<EventResponse> deleteEventById(@PathVariable("eventId") String eventId) {
         eventService.deleteEvent(eventId);
         return ResponseEntity.noContent().build();
-    }
-
-    private EventResponse convertToResponse(EventRecord event){
-        EventResponse response = new EventResponse();
-        response.setEventId(event.getEventId());
-        response.setDate(event.getDate());
-        response.setStatus(event.getStatus());
-        response.setCustomerName(event.getCustomerName());
-        response.setCustomerEmail(event.getCustomerEmail());
-        return response;
     }
 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)

@@ -12,7 +12,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -61,13 +60,17 @@ class LambdaServiceTest {
 
         // GIVEN
         String id = "fakeid";
-        String data = "somedata";
+        String name = "fakename";
+        String email = "fakeemail";
+        String date = "2021-01-01";
+
         LambdaEventRecord record = new LambdaEventRecord();
         record.setEventId(id);
-        record.setData(data);
+        record.setCustomerName(name);
+        record.setCustomerEmail(email);
+        record.setDate(date);
 
-
-        when(eventDao.getEventData(id)).thenReturn(Arrays.asList(record));
+        when(eventDao.getEventData(id)).thenReturn(List.of(record));
 
         // WHEN
         EventData response = this.lambdaService.getEventData(id);
@@ -122,10 +125,8 @@ class LambdaServiceTest {
     @Test
     void deleteData_nullList_throwsInvalidDataException() {
         //GIVEN
-        List<String> ids = null;
-
         //WHEN && THEN
-        assertThrows(InvalidDataException.class, () -> this.lambdaService.deleteEventData(ids));
+        assertThrows(InvalidDataException.class, () -> this.lambdaService.deleteEventData(null));
     }
 
     @Test

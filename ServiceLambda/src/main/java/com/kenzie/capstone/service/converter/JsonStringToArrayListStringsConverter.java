@@ -12,8 +12,7 @@ public class JsonStringToArrayListStringsConverter {
         try {
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
-            ArrayList<String> list = gson.fromJson(body, new TypeToken<ArrayList<String>>() {}.getType());
-            return list;
+            return gson.fromJson(body, new TypeToken<ArrayList<String>>() {}.getType());
         } catch (Exception e) {
             throw new InvalidDataException("Body \"" + body + "\" could not be deserialized into an ArrayList<String>");
         }
