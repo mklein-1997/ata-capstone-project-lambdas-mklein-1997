@@ -2,6 +2,7 @@ package com.kenzie.capstone.service.lambda;
 
 import com.kenzie.capstone.service.LambdaService;
 import com.kenzie.capstone.service.dependency.ServiceComponent;
+import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.model.EventData;
 import com.kenzie.capstone.service.dependency.DaggerServiceComponent;
 
@@ -52,10 +53,10 @@ public class GetEventData implements RequestHandler<APIGatewayProxyRequestEvent,
                     .withStatusCode(200)
                     .withBody(output);
 
-        } catch (Exception e) {
+        } catch (InvalidDataException e) {
             return response
                     .withStatusCode(400)
-                    .withBody(gson.toJson(e.getMessage()));
+                    .withBody(gson.toJson(e.errorPayload()));
         }
     }
 }

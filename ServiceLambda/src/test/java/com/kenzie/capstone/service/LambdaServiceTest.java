@@ -3,9 +3,9 @@ package com.kenzie.capstone.service;
 import com.kenzie.capstone.service.dao.EventDao;
 import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.model.EventData;
-import com.kenzie.capstone.service.model.EventRecord;
-import com.kenzie.capstone.service.model.EventRequest;
-import com.kenzie.capstone.service.model.EventResponse;
+import com.kenzie.capstone.service.model.LambdaEventRecord;
+import com.kenzie.capstone.service.model.LambdaEventRequest;
+import com.kenzie.capstone.service.model.LambdaEventResponse;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -37,24 +37,22 @@ class LambdaServiceTest {
 
     @Test
     void setDataTest() {
-        ArgumentCaptor<String> idCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<String> dataCaptor = ArgumentCaptor.forClass(String.class);
+        //GIVEN
+        LambdaEventRequest eventRequest = new LambdaEventRequest();
+        eventRequest.setEventId("fakeid");
+        eventRequest.setDate("2021-01-01");
+        eventRequest.setCustomerEmail("fakeemail");
+        eventRequest.setCustomerName("fakename");
 
-        // GIVEN
-        String data = "somedata";
+        //WHEN
+        LambdaEventResponse response = this.lambdaService.addEvent(eventRequest);
 
-        // WHEN
-        EventData response = this.lambdaService.setEventData(data);
-
-        // THEN
-        verify(eventDao, times(1)).setEventData(idCaptor.capture(), dataCaptor.capture());
-
-        assertNotNull(idCaptor.getValue(), "An ID is generated");
-        assertEquals(data, dataCaptor.getValue(), "The data is saved");
-
-        assertNotNull(response, "A response is returned");
-        assertEquals(idCaptor.getValue(), response.getEventId(), "The response id should match");
-        assertEquals(data, response.getData(), "The response data should match");
+        //THEN
+        assertNotNull(response);
+        assertEquals("fakeid", response.getEventId());
+        assertEquals("2021-01-01", response.getDate());
+        assertEquals("fakeemail", response.getCustomerEmail());
+        assertEquals("fakename", response.getCustomerName());
     }
 
     @Test
@@ -64,7 +62,7 @@ class LambdaServiceTest {
         // GIVEN
         String id = "fakeid";
         String data = "somedata";
-        EventRecord record = new EventRecord();
+        LambdaEventRecord record = new LambdaEventRecord();
         record.setEventId(id);
         record.setData(data);
 
@@ -81,7 +79,6 @@ class LambdaServiceTest {
 
         assertNotNull(response, "A response is returned");
         assertEquals(id, response.getEventId(), "The response id should match");
-        assertEquals(data, response.getData(), "The response data should match");
         reset(eventDao);
     }
 
@@ -110,7 +107,7 @@ class LambdaServiceTest {
         List<String> ids = new ArrayList<>();
         ids.add("fakeid");
 
-        EventRecord record = new EventRecord();
+        LambdaEventRecord record = new LambdaEventRecord();
         record.setEventId("fakeid");
 
         //WHEN
@@ -144,26 +141,32 @@ class LambdaServiceTest {
     @Test
     void deleteData_daoReturnsFalse_returnsFalse() {
         //GIVEN
+        List<String> ids = new ArrayList<>();
+        ids.add("fakeid");
 
+        LambdaEventRecord record = new LambdaEventRecord();
+        record.setEventId("fakeid");
 
         //WHEN
-
+        when(eventDao.deleteEventData(record)).thenReturn(false);
+        boolean response = this.lambdaService.deleteEventData(ids);
 
         //THEN
-
+        verify(eventDao, times(1)).deleteEventData(record);
+        assertFalse(response);
     }
 
     @Test
     void addNewEvent_Test() {
         //GIVEN
-        EventRequest eventRequest = new EventRequest();
+        LambdaEventRequest eventRequest = new LambdaEventRequest();
         eventRequest.setEventId("fakeid");
         eventRequest.setDate("2021-01-01");
         eventRequest.setCustomerEmail("fakeemail");
         eventRequest.setCustomerName("fakename");
 
         //WHEN
-        EventResponse response = this.lambdaService.addEvent(eventRequest);
+        LambdaEventResponse response = this.lambdaService.addEvent(eventRequest);
 
         //THEN
         assertNotNull(response);
@@ -184,7 +187,7 @@ class LambdaServiceTest {
     @Test
     void addNewEvent_nullEventId_throwsInvalidDataException() {
         //GIVEN
-        EventRequest eventRequest = new EventRequest();
+        LambdaEventRequest eventRequest = new LambdaEventRequest();
         eventRequest.setEventId(null);
         eventRequest.setDate("2021-01-01");
         eventRequest.setCustomerEmail("fakeemail");
@@ -197,7 +200,7 @@ class LambdaServiceTest {
     @Test
     void addNewEvent_invalidName_throwsInvalidDataException() {
         //GIVEN
-        EventRequest eventRequest = new EventRequest();
+        LambdaEventRequest eventRequest = new LambdaEventRequest();
         eventRequest.setEventId(null);
         eventRequest.setDate("2021-01-01");
         eventRequest.setCustomerEmail("fakeemail");

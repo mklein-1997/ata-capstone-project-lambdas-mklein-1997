@@ -8,6 +8,7 @@ import com.kenzie.appserver.service.model.Event;
 
 import com.kenzie.capstone.service.client.LambdaServiceClient;
 import com.kenzie.capstone.service.model.EventData;
+import com.kenzie.capstone.service.model.LambdaEventRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -68,9 +69,9 @@ public class EventService {
         EventRecord eventRecord = toEventRecord(event);
 
         eventRepository.save(eventRecord);
-//        lambdaServiceClient.setEventData(eventRecord.getEventId());
-        return toEventResponse(eventRecord);
 
+        lambdaServiceClient.addEvent(recordToLambdaRequest(eventRecord));
+        return toEventResponse(eventRecord);
     }
     public EventResponse update(String id, Event event) {
         Optional<EventRecord> eventRecords = eventRepository.findById(id);
@@ -84,12 +85,17 @@ public class EventService {
         eventRecord.setEventId(event.getEventId());
         eventRecord.setStatus(event.getEventStatus());
         eventRecord = eventRepository.save(eventRecord);
+
+        lambdaServiceClient.updateEvent(recordToLambdaRequest(eventRecord));
         return toEventResponse(eventRecord);
     }
 
     public void deleteEvent(String id) {
         if(id != null){
             eventRepository.deleteById(id);
+            List<String> ids = new ArrayList<>();
+            ids.add(id);
+            lambdaServiceClient.deleteEventData(ids);
         }else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Event Not Found");
         }
@@ -119,5 +125,14 @@ public class EventService {
         eventRecord.setEventId(event.getEventId());
         eventRecord.setStatus(event.getEventStatus());
         return eventRecord;
+    }
+    private LambdaEventRequest recordToLambdaRequest(EventRecord record) {
+        LambdaEventRequest request = new LambdaEventRequest();
+        request.setEventId(record.getEventId());
+        request.setCustomerEmail(record.getCustomerEmail());
+        request.setCustomerName(record.getCustomerName());
+        request.setDate(record.getDate());
+        request.setStatus(record.getStatus());
+        return request;
     }
 }

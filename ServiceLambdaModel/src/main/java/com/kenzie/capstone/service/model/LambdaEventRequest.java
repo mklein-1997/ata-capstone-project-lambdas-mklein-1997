@@ -1,9 +1,6 @@
 package com.kenzie.capstone.service.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class EventResponse {
-
+public class LambdaEventRequest {
     private String eventId;
 
     private String date;

@@ -3,7 +3,7 @@ package com.kenzie.capstone.service.dao;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDeleteExpression;
 import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.model.EventData;
-import com.kenzie.capstone.service.model.EventRecord;
+import com.kenzie.capstone.service.model.LambdaEventRecord;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
@@ -40,7 +40,7 @@ public class EventDao {
         return eventData;
     }
 
-    public void addNewEvent(EventRecord event) {
+    public void addNewEvent(LambdaEventRecord event) {
         try {
             mapper.save(event, new DynamoDBSaveExpression()
                     .withExpected(ImmutableMap.of(
@@ -54,38 +54,31 @@ public class EventDao {
     }
 
 
-    public List<EventRecord> getEventData(String eventId) {
-        EventRecord eventRecord = new EventRecord();
+    public List<LambdaEventRecord> getEventData(String eventId) {
+        LambdaEventRecord eventRecord = new LambdaEventRecord();
         //Rename this to eventId
         eventRecord.setEventId(eventId);
 
-        DynamoDBQueryExpression<EventRecord> queryExpression = new DynamoDBQueryExpression<EventRecord>()
+        DynamoDBQueryExpression<LambdaEventRecord> queryExpression = new DynamoDBQueryExpression<LambdaEventRecord>()
                 .withHashKeyValues(eventRecord)
                 .withConsistentRead(false);
 
-        return mapper.query(EventRecord.class, queryExpression);
+        return mapper.query(LambdaEventRecord.class, queryExpression);
     }
 
-    public EventRecord setEventData(String eventId, String data) {
-        EventRecord eventRecord = new EventRecord();
-        //Rename this to eventId
-        eventRecord.setEventId(eventId);
-        eventRecord.setData(data);
-
+    public void updateEvent(LambdaEventRecord record) {
         try {
-            mapper.save(eventRecord, new DynamoDBSaveExpression()
+            mapper.save(record, new DynamoDBSaveExpression()
                     .withExpected(ImmutableMap.of(
                             "eventId",
-                            new ExpectedAttributeValue().withExists(false)
+                            new ExpectedAttributeValue().withExists(true)
                     )));
         } catch (ConditionalCheckFailedException e) {
-            throw new IllegalArgumentException("event id already exists");
+            throw new InvalidDataException("Event already exists");
         }
-
-        return eventRecord;
     }
 
-    public Boolean deleteEventData(EventRecord eventId) {
+    public Boolean deleteEventData(LambdaEventRecord eventId) {
         try {
             mapper.delete(eventId, new DynamoDBDeleteExpression()
                     .withExpected(ImmutableMap.of(
@@ -98,16 +91,16 @@ public class EventDao {
         }
     }
 
-    public List<EventRecord> findByEventId(String eventId) {
-        EventRecord eventRecord = new EventRecord();
+    public List<LambdaEventRecord> findByEventId(String eventId) {
+        LambdaEventRecord eventRecord = new LambdaEventRecord();
         eventRecord.setEventId(eventId);
 
-        DynamoDBQueryExpression<EventRecord> queryExpression = new DynamoDBQueryExpression<EventRecord>()
+        DynamoDBQueryExpression<LambdaEventRecord> queryExpression = new DynamoDBQueryExpression<LambdaEventRecord>()
                 .withHashKeyValues(eventRecord)
                 .withIndexName("EventIdIndex")
                 .withConsistentRead(false);
 
-        return mapper.query(EventRecord.class, queryExpression);
+        return mapper.query(LambdaEventRecord.class, queryExpression);
     }
 }
 
