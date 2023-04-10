@@ -25,7 +25,7 @@ Resources:
         - AmazonDynamoDBFullAccess
       Tracing: Active
       Events:
-        GetResource:
+        UpdateResource:
           Type: Api
           Properties:
             Path: /events/{eventId}
@@ -73,10 +73,10 @@ Resources:
         - AmazonDynamoDBFullAccess
       Tracing: Active
       Events:
-        GetResource:
+        UpdateResource:
           Type: Api
           Properties:
-            Path: /events/add
+            Path: /events
             Method: post
   DeleteEventDataFunction:
     Type: AWS::Serverless::Function
@@ -97,9 +97,9 @@ Resources:
         - AmazonDynamoDBFullAccess
       Tracing: Active
       Events:
-        DeleteResource:
+        UpdateResource:
           Type: Api
           Properties:
-            Path: /events/delete
-            Method: post
+            Path: /events/{eventId}
+            Method: delete
 
