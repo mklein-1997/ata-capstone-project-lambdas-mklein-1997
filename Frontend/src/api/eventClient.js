@@ -13,7 +13,7 @@ export default class EventClient extends BaseClass {
 
     constructor(props = {}){
         super();
-        const methodsToBind = ['clientLoaded', 'getEvent', 'createEvent'];
+        const methodsToBind = ['clientLoaded', 'getEvent', 'deleteEvent','createEvent'];
         this.bindClassMethods(methodsToBind, this);
         this.props = props;
         this.clientLoaded(axios);
@@ -44,6 +44,15 @@ export default class EventClient extends BaseClass {
             this.handleError("getEvent", error, errorCallback)
         }
     }
+
+    async deleteEvent(eventId, errorCallback) {
+            try {
+                const response = await this.client.delete(`/events/${eventId}`);
+                return response.status;
+            } catch (error) {
+                this.handleError("deleteEvent", error, errorCallback)
+            }
+        }
 
     async createEvent(date, status, customerName, customerEmail, errorCallback) {
         try {
