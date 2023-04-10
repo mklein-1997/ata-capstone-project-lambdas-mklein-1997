@@ -43,7 +43,7 @@ class EventControllerTest {
     public void getByEventId_Exists() throws Exception {
 
         String id = UUID.randomUUID().toString();
-        Event event = new Event(id, "Erica", "email", LocalDate.now().toString(), "Event Created");
+        Event event = new Event(id, mockNeat.actors().toString(), mockNeat.emails().toString(), LocalDate.now().toString(), "Event Created");
         eventService.addNewEvent(event);
 
         mvc.perform(get("/events/{eventId}", id)
@@ -57,7 +57,7 @@ class EventControllerTest {
     @Test
     public void getAllEvents_Exists() throws Exception {
         String id = UUID.randomUUID().toString();
-        Event event = new Event(id, "Erica", "email", LocalDate.now().toString(), "Event Created");
+        Event event = new Event(id, mockNeat.actors().toString(), mockNeat.emails().toString(), LocalDate.now().toString(), "Event Created");
         eventService.addNewEvent(event);
 
         mvc.perform(get("/events/all")
@@ -79,6 +79,8 @@ class EventControllerTest {
         request.setCustomerName(customerName);
         request.setCustomerEmail(customerEmail);
         request.setEventId(eventId);
+        request.setDate(date);
+        request.setStatus("upcoming");
 
         mapper.registerModule(new JavaTimeModule());
 
@@ -121,10 +123,13 @@ class EventControllerTest {
 
         String json = mapper.writeValueAsString(request);
 
+
         mvc.perform(put("/events/{eventId}", eventId)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
+                .andExpect(jsonPath("$.customerName", is("Shara Smith")))
+                .andExpect(jsonPath("$.customerEmail", is("shara@email.com")))
                 .andExpect(status().is2xxSuccessful());
     }
 
@@ -133,8 +138,8 @@ class EventControllerTest {
         String eventId = UUID.randomUUID().toString();
         String date = LocalDate.now().toString();
         String status = "upcoming";
-        String customerName = "Sarah";
-        String customerEmail = "sarah_event_planner@gmail.com";
+        String customerName = mockNeat.actors().toString();
+        String customerEmail = mockNeat.emails().toString();
 
         Event event = new Event(eventId,date,status,customerName,customerEmail);
         eventService.addNewEvent(event);

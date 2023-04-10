@@ -86,7 +86,7 @@ public class EventService {
         eventRecord.setStatus(event.getEventStatus());
         eventRecord = eventRepository.save(eventRecord);
 
-        lambdaServiceClient.updateEvent(recordToLambdaRequest(eventRecord));
+        //lambdaServiceClient.updateEvent(recordToLambdaRequest(eventRecord));
         return toEventResponse(eventRecord);
     }
 
@@ -95,7 +95,7 @@ public class EventService {
             eventRepository.deleteById(id);
             List<String> ids = new ArrayList<>();
             ids.add(id);
-            lambdaServiceClient.deleteEventData(ids);
+            //lambdaServiceClient.deleteEventData(ids);
         }else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Event Not Found");
         }
