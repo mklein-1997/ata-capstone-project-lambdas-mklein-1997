@@ -1,7 +1,11 @@
 package com.kenzie.capstone.service.dependency;
 
 
+import com.kenzie.capstone.service.caching.CacheClient;
+import com.kenzie.capstone.service.dao.CachingEventDao;
 import com.kenzie.capstone.service.dao.EventDao;
+import com.kenzie.capstone.service.dao.EventDaoInterface;
+import com.kenzie.capstone.service.dao.NonCachingEventDao;
 import com.kenzie.capstone.service.util.DynamoDbClientProvider;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
@@ -27,10 +31,20 @@ public class DaoModule {
 
     @Singleton
     @Provides
-    @Named("EventDao")
+    @Named("NonCachingEventDao")
     @Inject
-    public EventDao provideEventDao(@Named("DynamoDBMapper") DynamoDBMapper mapper) {
-        return new EventDao(mapper);
+    public NonCachingEventDao provideNonCachingEventDao(@Named("DynamoDBMapper") DynamoDBMapper mapper) {
+        return new NonCachingEventDao(mapper);
+    }
+
+    @Singleton
+    @Provides
+    @Named("EventDaoInterface")
+    @Inject
+    public EventDaoInterface provideEventDao(
+            @Named("CacheClient")CacheClient cacheClient,
+            @Named("NonCachingEventDao")NonCachingEventDao nonCachingEventDao) {
+        return new CachingEventDao(cacheClient, nonCachingEventDao);
     }
 
 }

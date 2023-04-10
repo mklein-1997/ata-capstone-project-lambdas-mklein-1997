@@ -9,5 +9,6 @@ public interface EventDaoInterface {
     public boolean deleteEvent(LambdaEventRecord event);
     List<LambdaEventRecord> findByEventId(String eventId);
     List<LambdaEventRecord> findUsersWithoutEventId();
+    LambdaEventRecord updateEvent(LambdaEventRecord event);
 
 }

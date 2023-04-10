@@ -1,6 +1,7 @@
 package com.kenzie.capstone.service;
 
 import com.kenzie.capstone.service.converter.EventConverter;
+import com.kenzie.capstone.service.dao.EventDaoInterface;
 import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.dao.EventDao;
 import com.kenzie.capstone.service.model.EventData;
@@ -16,10 +17,10 @@ import java.util.List;
 public class LambdaService {
     //original LambdaService file https://tinyurl.com/LambdaService
 
-    private final EventDao eventDao;
+    private final EventDaoInterface eventDao;
 
     @Inject
-    public LambdaService(EventDao eventDao) {
+    public LambdaService(EventDaoInterface eventDao) {
         this.eventDao = eventDao;
     }
 
@@ -28,12 +29,12 @@ public class LambdaService {
             throw new InvalidDataException("Request must contain a valid Customer Name");
         }
         LambdaEventRecord record = EventConverter.fromRequestToRecord(event);
-        eventDao.addNewEvent(record);
+        eventDao.addEvent(record);
         return EventConverter.fromRecordToResponse(record);
     }
 
     public EventData getEventData(String eventId) {
-        List<LambdaEventRecord> records = eventDao.getEventData(eventId);
+        List<LambdaEventRecord> records = eventDao.findByEventId(eventId);
         if (records.size() > 0) {
             return new EventData(records.get(0).getEventId(), records.get(0).getCustomerName(),
                     records.get(0).getCustomerEmail(), records.get(0).getDate(), records.get(0).getStatus());
@@ -65,7 +66,7 @@ public class LambdaService {
             LambdaEventRecord record = new LambdaEventRecord();
             record.setEventId(eventId);
 
-            boolean deleted = eventDao.deleteEventData(record);
+            boolean deleted = eventDao.deleteEvent(record);
 
             if(!deleted){
                 allDeleted = false;

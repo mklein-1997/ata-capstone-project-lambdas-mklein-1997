@@ -1,4 +1,4 @@
-package com.kenzie.capstone.service.caching;
+package com.kenzie.capstone.service.dao;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -6,6 +6,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.kenzie.capstone.service.caching.CacheClient;
 import com.kenzie.capstone.service.dao.NonCachingEventDao;
 import com.kenzie.capstone.service.model.LambdaEventRecord;
 
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CachingEventDao {
+public class CachingEventDao implements EventDaoInterface{
     private static final int EVENT_READ_TTL = 60 * 60;
     private static final String EVENT_KEY = "EventKey::%s";
 
@@ -29,14 +30,21 @@ public class CachingEventDao {
         this.eventDaoInterface = eventDaoInterface;
     }
 
-
+    @Override
     public LambdaEventRecord addEvent(LambdaEventRecord event) {
         String key = String.format(EVENT_KEY, event.getEventId());
         cacheClient.invalidate(key);
         return eventDaoInterface.addEvent(event);
     }
 
+    @Override
+    public LambdaEventRecord updateEvent(LambdaEventRecord event) {
+        String key = String.format(EVENT_KEY, event.getEventId());
+        cacheClient.invalidate(key);
+        return eventDaoInterface.updateEvent(event);
+    }
 
+    @Override
     public boolean deleteEvent(LambdaEventRecord event) {
         boolean result = eventDaoInterface.deleteEvent(event);
 
@@ -48,7 +56,7 @@ public class CachingEventDao {
         return result;
     }
 
-
+    @Override
     public List<LambdaEventRecord> findByEventId(String eventId) {
 
         String key = String.format(EVENT_KEY, eventId);
@@ -64,32 +72,34 @@ public class CachingEventDao {
         }
     }
 
-
+    @Override
     public List<LambdaEventRecord> findUsersWithoutEventId() {
         // Look up customer from the data source
         return eventDaoInterface.findUsersWithoutEventId();
     }
 
     // Create the Gson object with instructions for ZonedDateTime
-    GsonBuilder builder = new GsonBuilder().registerTypeAdapter(
-            ZonedDateTime.class,
-            new TypeAdapter<ZonedDateTime>() {
-                @Override
-                public void write(JsonWriter out, ZonedDateTime value) throws IOException {
-                    out.value(value.toString());
+    private Gson getGson() {
+        GsonBuilder builder = new GsonBuilder().registerTypeAdapter(
+                ZonedDateTime.class,
+                new TypeAdapter<ZonedDateTime>() {
+                    @Override
+                    public void write(JsonWriter out, ZonedDateTime value) throws IOException {
+                        out.value(value.toString());
+                    }
+                    @Override
+                    public ZonedDateTime read(JsonReader in) throws IOException {
+                        return ZonedDateTime.parse(in.nextString());
+                    }
                 }
-                @Override
-                public ZonedDateTime read(JsonReader in) throws IOException {
-                    return ZonedDateTime.parse(in.nextString());
-                }
-            }
-    ).enableComplexMapKeySerialization();
-    // Store this in your class
-    Gson gson = builder.create();
+        ).enableComplexMapKeySerialization();
+        // Store this in your class
+        return builder.create();
+    }
 
     // Converting out of the cache
     private List<LambdaEventRecord> fromJson(String json) {
-        return gson.fromJson(json, new TypeToken<ArrayList<LambdaEventRecord>>() { }.getType());
+        return getGson().fromJson(json, new TypeToken<ArrayList<LambdaEventRecord>>() { }.getType());
     }
     // Setting value
     private void addToCache(List<LambdaEventRecord> records) {
@@ -103,7 +113,7 @@ public class CachingEventDao {
         cacheClient.setValue(
                 key,
                 EVENT_READ_TTL,
-                gson.toJson(records)
+                getGson().toJson(records)
         );
     }
 }
