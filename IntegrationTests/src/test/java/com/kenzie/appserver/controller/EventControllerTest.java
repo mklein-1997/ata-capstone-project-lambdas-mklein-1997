@@ -43,7 +43,7 @@ class EventControllerTest {
     public void getByEventId_Exists() throws Exception {
 
         String id = UUID.randomUUID().toString();
-        Event event = new Event(id, mockNeat.actors().toString(), mockNeat.emails().toString(), LocalDate.now().toString(), "Event Created");
+        Event event = new Event(id, "Thor", "godOfThunder@valhalla.com", LocalDate.now().toString(), "Event Created");
         eventService.addNewEvent(event);
 
         mvc.perform(get("/events/{eventId}", id)
@@ -57,14 +57,23 @@ class EventControllerTest {
     @Test
     public void getAllEvents_Exists() throws Exception {
         String id = UUID.randomUUID().toString();
-        Event event = new Event(id, mockNeat.actors().toString(), mockNeat.emails().toString(), LocalDate.now().toString(), "Event Created");
+        String id1 = UUID.randomUUID().toString();
+        String id2 = UUID.randomUUID().toString();
+        Event event = new Event(id, "Thor", "godOfThunder@valhalla.com", LocalDate.now().toString(), "Event Created");
+        Event event1 = new Event(id1, "Loki", "loki@valhalla.com", LocalDate.now().toString(), "Event Created");
+        Event event2 = new Event(id2, "Captain America", "americasbestbutt@Merica.com", LocalDate.now().toString(), "Event Created");
         eventService.addNewEvent(event);
+        eventService.addNewEvent(event1);
+        eventService.addNewEvent(event2);
+
 
         mvc.perform(get("/events/all")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(200));
 
         eventService.deleteEvent(id);
+        eventService.deleteEvent(id1);
+        eventService.deleteEvent(id2);
 
     }
 
@@ -138,8 +147,8 @@ class EventControllerTest {
         String eventId = UUID.randomUUID().toString();
         String date = LocalDate.now().toString();
         String status = "upcoming";
-        String customerName = mockNeat.actors().toString();
-        String customerEmail = mockNeat.emails().toString();
+        String customerName = "Fiona";
+        String customerEmail = "Fiona&Shrek@forver.after.com";
 
         Event event = new Event(eventId,date,status,customerName,customerEmail);
         eventService.addNewEvent(event);
