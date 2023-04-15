@@ -1,8 +1,9 @@
 package com.kenzie.capstone.service.lambda;
 
-import com.kenzie.capstone.service.LambdaService;
-import com.kenzie.capstone.service.converter.JsonStringToEventConverter;
+import com.kenzie.capstone.service.NotificationService;
 import com.kenzie.capstone.service.dependency.ServiceComponent;
+import com.kenzie.capstone.service.exceptions.InvalidDataException;
+import com.kenzie.capstone.service.model.EventData;
 import com.kenzie.capstone.service.dependency.DaggerServiceComponent;
 
 import com.amazonaws.services.lambda.runtime.Context;
@@ -11,46 +12,41 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.kenzie.capstone.service.exceptions.InvalidDataException;
-import com.kenzie.capstone.service.model.LambdaEventRequest;
-import com.kenzie.capstone.service.model.LambdaEventResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class UpdateEvent implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+public class GetNotification implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
     static final Logger log = LogManager.getLogger();
 
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent input, Context context) {
-        JsonStringToEventConverter converter = new JsonStringToEventConverter();
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
 
         log.info(gson.toJson(input));
 
         ServiceComponent serviceComponent = DaggerServiceComponent.create();
-        LambdaService lambdaService = serviceComponent.provideLambdaService();
+        NotificationService notificationService = serviceComponent.provideNotificationService();
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
 
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent()
                 .withHeaders(headers);
 
-        String data = input.getBody();
+        String eventId = input.getPathParameters().get("eventId");
 
-        if (data == null || data.length() == 0) {
+        if (eventId == null || eventId.length() == 0) {
             return response
                     .withStatusCode(400)
-                    .withBody("data is invalid");
+                    .withBody("Event ID is invalid");
         }
 
         try {
-            LambdaEventRequest eventRequest = converter.convert(data);
-            LambdaEventResponse eventData = lambdaService.updateEvent(eventRequest);
+            EventData eventData = notificationService.getNotification(eventId);
             String output = gson.toJson(eventData);
 
             return response

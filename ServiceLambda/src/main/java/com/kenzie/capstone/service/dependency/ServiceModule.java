@@ -1,8 +1,8 @@
 package com.kenzie.capstone.service.dependency;
 
-import com.kenzie.capstone.service.LambdaService;
+import com.kenzie.capstone.service.NotificationService;
 
-import com.kenzie.capstone.service.dao.EventDao;
+import com.kenzie.capstone.service.dao.NotificationDao;
 import dagger.Module;
 import dagger.Provides;
 
@@ -18,8 +18,8 @@ public class ServiceModule {
     @Singleton
     @Provides
     @Inject
-    public LambdaService provideLambdaService(@Named("EventDao") EventDao eventDao) {
-        return new LambdaService(eventDao);
+    public NotificationService provideNotificationService(@Named("EventDao") NotificationDao notificationDao) {
+        return new NotificationService(notificationDao);
     }
 }
 

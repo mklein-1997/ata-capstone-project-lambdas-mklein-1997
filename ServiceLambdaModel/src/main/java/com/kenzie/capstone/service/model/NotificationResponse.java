@@ -1,6 +1,6 @@
 package com.kenzie.capstone.service.model;
 
-public class LambdaEventResponse {
+public class NotificationResponse {
 
     private String eventId;
 

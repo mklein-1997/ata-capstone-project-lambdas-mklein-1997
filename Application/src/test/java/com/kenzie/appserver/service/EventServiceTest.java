@@ -4,7 +4,7 @@ import com.kenzie.appserver.controller.model.EventResponse;
 import com.kenzie.appserver.repositories.EventRepository;
 import com.kenzie.appserver.repositories.model.EventRecord;
 import com.kenzie.appserver.service.model.Event;
-import com.kenzie.capstone.service.client.LambdaServiceClient;
+import com.kenzie.capstone.service.client.NotificationServiceClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,8 +25,8 @@ public class EventServiceTest {
     @BeforeEach
     void setup() {
         eventRepository = mock(EventRepository.class);
-        LambdaServiceClient lambdaServiceClient = mock(LambdaServiceClient.class);
-        eventService = new EventService(eventRepository, lambdaServiceClient);
+        NotificationServiceClient notificationServiceClient = mock(NotificationServiceClient.class);
+        eventService = new EventService(eventRepository, notificationServiceClient);
     }
     /** ------------------------------------------------------------------------
      *  exampleService.findById

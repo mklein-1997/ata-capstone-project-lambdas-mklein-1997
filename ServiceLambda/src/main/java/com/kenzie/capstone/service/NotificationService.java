@@ -1,39 +1,39 @@
 package com.kenzie.capstone.service;
 
-import com.kenzie.capstone.service.converter.EventConverter;
-import com.kenzie.capstone.service.dao.EventDao;
+import com.kenzie.capstone.service.converter.NotificationConverter;
+import com.kenzie.capstone.service.dao.NotificationDao;
 import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.model.EventData;
-import com.kenzie.capstone.service.model.LambdaEventRecord;
-import com.kenzie.capstone.service.model.LambdaEventRequest;
-import com.kenzie.capstone.service.model.LambdaEventResponse;
+import com.kenzie.capstone.service.model.NotificationRecord;
+import com.kenzie.capstone.service.model.NotificationRequest;
+import com.kenzie.capstone.service.model.NotificationResponse;
 
 import javax.inject.Inject;
 
 import java.util.List;
 
 
-public class LambdaService {
+public class NotificationService {
     //original LambdaService file https://tinyurl.com/LambdaService
 
-    private final EventDao eventDao;
+    private final NotificationDao notificationDao;
 
     @Inject
-    public LambdaService(EventDao eventDao) {
-        this.eventDao = eventDao;
+    public NotificationService(NotificationDao notificationDao) {
+        this.notificationDao = notificationDao;
     }
 
-    public LambdaEventResponse addEvent(LambdaEventRequest event) {
+    public NotificationResponse addNotification(NotificationRequest event) {
         if (event == null || event.getEventId() == null || event.getCustomerName().length() == 0) {
             throw new InvalidDataException("Request must contain a valid Customer Name");
         }
-        LambdaEventRecord record = EventConverter.fromRequestToRecord(event);
-        eventDao.addEvent(record);
-        return EventConverter.fromRecordToResponse(record);
+        NotificationRecord record = NotificationConverter.fromRequestToRecord(event);
+        notificationDao.addEvent(record);
+        return NotificationConverter.fromRecordToResponse(record);
     }
 
-    public EventData getEventData(String eventId) {
-        List<LambdaEventRecord> records = eventDao.findByEventId(eventId);
+    public EventData getNotification(String eventId) {
+        List<NotificationRecord> records = notificationDao.findByEventId(eventId);
         if (records.size() > 0) {
             return new EventData(records.get(0).getEventId(), records.get(0).getCustomerName(),
                     records.get(0).getCustomerEmail(), records.get(0).getDate(), records.get(0).getStatus());
@@ -41,16 +41,16 @@ public class LambdaService {
         return null;
     }
 
-    public LambdaEventResponse updateEvent(LambdaEventRequest event) {
+    public NotificationResponse updateNotification(NotificationRequest event) {
         if (event == null || event.getEventId() == null || event.getCustomerName().length() == 0) {
             throw new InvalidDataException("Request must contain a valid Customer Name");
         }
-        LambdaEventRecord record = EventConverter.fromRequestToRecord(event);
-        eventDao.updateEvent(record);
-        return EventConverter.fromRecordToResponse(record);
+        NotificationRecord record = NotificationConverter.fromRequestToRecord(event);
+        notificationDao.updateEvent(record);
+        return NotificationConverter.fromRecordToResponse(record);
     }
 
-    public Boolean deleteEventData(List<String> eventIds) {
+    public Boolean deleteNotification(List<String> eventIds) {
         boolean allDeleted = true;
 
         if(eventIds == null){
@@ -62,10 +62,10 @@ public class LambdaService {
                 throw new InvalidDataException("Event ID cannot be null or empty to delete");
             }
 
-            LambdaEventRecord record = new LambdaEventRecord();
+            NotificationRecord record = new NotificationRecord();
             record.setEventId(eventId);
 
-            boolean deleted = eventDao.deleteEvent(record);
+            boolean deleted = notificationDao.deleteEvent(record);
 
             if(!deleted){
                 allDeleted = false;

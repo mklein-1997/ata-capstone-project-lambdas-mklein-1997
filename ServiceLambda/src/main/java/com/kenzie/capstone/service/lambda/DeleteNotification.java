@@ -6,45 +6,44 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.kenzie.capstone.service.LambdaService;
-import com.kenzie.capstone.service.converter.JsonStringToEventConverter;
+import com.kenzie.capstone.service.NotificationService;
+import com.kenzie.capstone.service.converter.JsonStringToArrayListStringsConverter;
+import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.dependency.DaggerServiceComponent;
 import com.kenzie.capstone.service.dependency.ServiceComponent;
-import com.kenzie.capstone.service.exceptions.InvalidDataException;
-import com.kenzie.capstone.service.model.LambdaEventResponse;
-import com.kenzie.capstone.service.model.LambdaEventRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class AddEvent  implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+import java.util.List;
 
+public class DeleteNotification implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
     static final Logger log = LogManager.getLogger();
 
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent input, Context context) {
-        JsonStringToEventConverter jsonStringToEventConverter = new JsonStringToEventConverter();
+        JsonStringToArrayListStringsConverter jsonStringToArrayListStringsConverter = new JsonStringToArrayListStringsConverter();
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         // Logging the request json to make debugging easier.
         log.info(gson.toJson(input));
 
         ServiceComponent serviceComponent = DaggerServiceComponent.create();
-        LambdaService lambdaService = serviceComponent.provideLambdaService();
+        NotificationService notificationService = serviceComponent.provideNotificationService();
 
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 
         try {
-            LambdaEventRequest eventRequest = jsonStringToEventConverter.convert(input.getBody());
+            List<String> eventList = jsonStringToArrayListStringsConverter.convert(input.getBody());
+            boolean allDeleted = notificationService.deleteNotification(eventList);
 
-            LambdaEventResponse eventResponse = lambdaService.addEvent(eventRequest);
             return response
                     .withStatusCode(200)
-                    .withBody(gson.toJson(eventResponse));
-        } catch (InvalidDataException e) {
+                    .withBody(gson.toJson(allDeleted));
+        } catch(InvalidDataException e){
             return response
                     .withStatusCode(400)
                     .withBody(gson.toJson(e.errorPayload()));
         }
-    }
 
+    }
 }

@@ -6,8 +6,8 @@ import com.kenzie.appserver.repositories.model.EventRecord;
 import com.kenzie.appserver.service.model.Event;
 
 
-import com.kenzie.capstone.service.client.LambdaServiceClient;
-import com.kenzie.capstone.service.model.LambdaEventRequest;
+import com.kenzie.capstone.service.client.NotificationServiceClient;
+import com.kenzie.capstone.service.model.NotificationRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,12 +22,12 @@ import java.util.stream.StreamSupport;
 @Service
 public class EventService {
     private final EventRepository eventRepository;
-    private final LambdaServiceClient lambdaServiceClient;
+    private final NotificationServiceClient notificationServiceClient;
 
 
-    public EventService(EventRepository eventRepository, LambdaServiceClient lambdaServiceClient) {
+    public EventService(EventRepository eventRepository, NotificationServiceClient notificationServiceClient) {
         this.eventRepository = eventRepository;
-        this.lambdaServiceClient = lambdaServiceClient;
+        this.notificationServiceClient = notificationServiceClient;
     }
 
     /**
@@ -69,7 +69,7 @@ public class EventService {
 
         eventRepository.save(eventRecord);
         //Commented out because it breaks the tests in the pipeline
-        //lambdaServiceClient.addEvent(recordToLambdaRequest(eventRecord));
+        //notificationServiceClient.addNotification(recordToLambdaRequest(eventRecord));
         return toEventResponse(eventRecord);
     }
     public EventResponse update(String id, Event event) {
@@ -121,8 +121,8 @@ public class EventService {
         eventRecord.setStatus(event.getEventStatus());
         return eventRecord;
     }
-    private LambdaEventRequest recordToLambdaRequest(EventRecord record) {
-        LambdaEventRequest request = new LambdaEventRequest();
+    private NotificationRequest recordToLambdaRequest(EventRecord record) {
+        NotificationRequest request = new NotificationRequest();
         request.setEventId(record.getEventId());
         request.setCustomerEmail(record.getCustomerEmail());
         request.setCustomerName(record.getCustomerName());

@@ -6,13 +6,13 @@ Parameters:
     Type: String
     Default: dev
 Resources:
-  GetEventDataFunction:
+  GetNotificationFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
-      Handler: com.kenzie.capstone.service.lambda.GetEventData
+      Handler: com.kenzie.capstone.service.lambda.GetNotification
       Runtime: java11
-      Description: Get Event Data for given eventId
+      Description: Get Notification for given eventId
       MemorySize: 512
       Timeout: 240
       # Function's execution role
@@ -30,13 +30,13 @@ Resources:
           Properties:
             Path: /events/{eventId}
             Method: get
-  UpdateEventFunction:
+  UpdateNotificationFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
-      Handler: com.kenzie.capstone.service.lambda.UpdateEvent
+      Handler: com.kenzie.capstone.service.lambda.UpdateNotification
       Runtime: java11
-      Description: Update Event Data
+      Description: Update Notification
       MemorySize: 512
       Timeout: 240
       # Function's execution role
@@ -54,13 +54,13 @@ Resources:
           Properties:
             Path: /events/{eventId}
             Method: put
-  AddEventFunction:
+  AddNotificationFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
-      Handler: com.kenzie.capstone.service.lambda.AddEvent
+      Handler: com.kenzie.capstone.service.lambda.AddNotification
       Runtime: java11
-      Description: Add New Event
+      Description: Add New Notification
       MemorySize: 512
       Timeout: 240
       # Function's execution role
@@ -78,13 +78,13 @@ Resources:
           Properties:
             Path: /events
             Method: post
-  DeleteEventDataFunction:
+  DeleteNotificationFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
-      Handler: com.kenzie.capstone.service.lambda.DeleteEventData
+      Handler: com.kenzie.capstone.service.lambda.DeleteNotification
       Runtime: java11
-      Description: Delete Event Data
+      Description: Delete Notification
       MemorySize: 512
       Timeout: 240
       # Function's execution role

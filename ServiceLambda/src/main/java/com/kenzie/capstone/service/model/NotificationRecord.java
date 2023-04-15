@@ -6,8 +6,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 import java.util.Objects;
 
-    @DynamoDBTable(tableName = "Events")
-    public class LambdaEventRecord {
+    @DynamoDBTable(tableName = "Notifications")
+    public class NotificationRecord {
 
         private String eventId;
         private String date;
@@ -65,7 +65,7 @@ import java.util.Objects;
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            LambdaEventRecord that = (LambdaEventRecord) o;
+            NotificationRecord that = (NotificationRecord) o;
             return Objects.equals(eventId, that.eventId) && Objects.equals(date, that.date) && Objects.equals(status,
                     that.status) && Objects.equals(customerName, that.customerName) && Objects.equals(customerEmail,
                     that.customerEmail);

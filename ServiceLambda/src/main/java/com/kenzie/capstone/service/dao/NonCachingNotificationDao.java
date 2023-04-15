@@ -7,13 +7,13 @@ import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.google.common.collect.ImmutableMap;
 import com.kenzie.capstone.service.exceptions.InvalidDataException;
-import com.kenzie.capstone.service.model.LambdaEventRecord;
+import com.kenzie.capstone.service.model.NotificationRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
-public class NonCachingEventDao implements EventDao {
+public class NonCachingNotificationDao implements NotificationDao {
     private DynamoDBMapper mapper;
 
     static final Logger log = LogManager.getLogger();
@@ -22,11 +22,11 @@ public class NonCachingEventDao implements EventDao {
      * Allows access to and manipulation of Match objects from the data store.
      * @param mapper Access to DynamoDB
      */
-    public NonCachingEventDao(DynamoDBMapper mapper) {
+    public NonCachingNotificationDao(DynamoDBMapper mapper) {
         this.mapper = mapper;
     }
     @Override
-    public LambdaEventRecord addEvent(LambdaEventRecord event) {
+    public NotificationRecord addEvent(NotificationRecord event) {
         try {
             mapper.save(event, new DynamoDBSaveExpression()
                     .withExpected(ImmutableMap.of(
@@ -41,7 +41,7 @@ public class NonCachingEventDao implements EventDao {
     }
 
     @Override
-    public LambdaEventRecord updateEvent(LambdaEventRecord record) {
+    public NotificationRecord updateEvent(NotificationRecord record) {
         try {
             mapper.save(record, new DynamoDBSaveExpression()
                     .withExpected(ImmutableMap.of(
@@ -55,7 +55,7 @@ public class NonCachingEventDao implements EventDao {
     }
 
     @Override
-    public boolean deleteEvent(LambdaEventRecord event) {
+    public boolean deleteEvent(NotificationRecord event) {
         try {
             mapper.delete(event, new DynamoDBDeleteExpression()
                     .withExpected(ImmutableMap.of(
@@ -71,23 +71,23 @@ public class NonCachingEventDao implements EventDao {
         return true;
     }
     @Override
-    public List<LambdaEventRecord> findByEventId(String eventId) {
-        LambdaEventRecord eventRecord = new LambdaEventRecord();
+    public List<NotificationRecord> findByEventId(String eventId) {
+        NotificationRecord eventRecord = new NotificationRecord();
         eventRecord.setEventId(eventId);
 
-        DynamoDBQueryExpression<LambdaEventRecord> queryExpression = new DynamoDBQueryExpression<LambdaEventRecord>()
+        DynamoDBQueryExpression<NotificationRecord> queryExpression = new DynamoDBQueryExpression<NotificationRecord>()
                 .withHashKeyValues(eventRecord)
                 .withIndexName("EventIdIndex")
                 .withConsistentRead(false);
 
-        return mapper.query(LambdaEventRecord.class, queryExpression);
+        return mapper.query(NotificationRecord.class, queryExpression);
     }
     @Override
-    public List<LambdaEventRecord> findUsersWithoutEventId() {
+    public List<NotificationRecord> findUsersWithoutEventId() {
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
                 .withFilterExpression("attribute_not_exists(EventId)");
 
-        return mapper.scan(LambdaEventRecord.class, scanExpression);
+        return mapper.scan(NotificationRecord.class, scanExpression);
     }
 }
 

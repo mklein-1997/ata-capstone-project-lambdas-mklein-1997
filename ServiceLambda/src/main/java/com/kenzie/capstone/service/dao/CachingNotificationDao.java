@@ -7,7 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.kenzie.capstone.service.caching.CacheClient;
-import com.kenzie.capstone.service.model.LambdaEventRecord;
+import com.kenzie.capstone.service.model.NotificationRecord;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -16,35 +16,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CachingEventDao implements EventDao {
+public class CachingNotificationDao implements NotificationDao {
     private static final int EVENT_READ_TTL = 60 * 60;
     private static final String EVENT_KEY = "EventKey::%s";
 
     private final CacheClient cacheClient;
-    private final NonCachingEventDao eventDaoInterface;
+    private final NonCachingNotificationDao eventDaoInterface;
 
     @Inject
-    public CachingEventDao(CacheClient cacheClient, NonCachingEventDao eventDaoInterface) {
+    public CachingNotificationDao(CacheClient cacheClient, NonCachingNotificationDao eventDaoInterface) {
         this.cacheClient = cacheClient;
         this.eventDaoInterface = eventDaoInterface;
     }
 
     @Override
-    public LambdaEventRecord addEvent(LambdaEventRecord event) {
+    public NotificationRecord addEvent(NotificationRecord event) {
         String key = String.format(EVENT_KEY, event.getEventId());
         cacheClient.invalidate(key);
         return eventDaoInterface.addEvent(event);
     }
 
     @Override
-    public LambdaEventRecord updateEvent(LambdaEventRecord event) {
+    public NotificationRecord updateEvent(NotificationRecord event) {
         String key = String.format(EVENT_KEY, event.getEventId());
         cacheClient.invalidate(key);
         return eventDaoInterface.updateEvent(event);
     }
 
     @Override
-    public boolean deleteEvent(LambdaEventRecord event) {
+    public boolean deleteEvent(NotificationRecord event) {
         boolean result = eventDaoInterface.deleteEvent(event);
 
         if (result) {
@@ -56,7 +56,7 @@ public class CachingEventDao implements EventDao {
     }
 
     @Override
-    public List<LambdaEventRecord> findByEventId(String eventId) {
+    public List<NotificationRecord> findByEventId(String eventId) {
 
         String key = String.format(EVENT_KEY, eventId);
 
@@ -65,14 +65,14 @@ public class CachingEventDao implements EventDao {
         if (cache.isPresent()) {
             return fromJson(cache.get());
         } else {
-            List<LambdaEventRecord> records = eventDaoInterface.findByEventId(eventId);
+            List<NotificationRecord> records = eventDaoInterface.findByEventId(eventId);
             addToCache(records);
             return records;
         }
     }
 
     @Override
-    public List<LambdaEventRecord> findUsersWithoutEventId() {
+    public List<NotificationRecord> findUsersWithoutEventId() {
         // Look up customer from the data source
         return eventDaoInterface.findUsersWithoutEventId();
     }
@@ -97,11 +97,11 @@ public class CachingEventDao implements EventDao {
     }
 
     // Converting out of the cache
-    private List<LambdaEventRecord> fromJson(String json) {
-        return getGson().fromJson(json, new TypeToken<ArrayList<LambdaEventRecord>>() { }.getType());
+    private List<NotificationRecord> fromJson(String json) {
+        return getGson().fromJson(json, new TypeToken<ArrayList<NotificationRecord>>() { }.getType());
     }
     // Setting value
-    private void addToCache(List<LambdaEventRecord> records) {
+    private void addToCache(List<NotificationRecord> records) {
         String eventId = "";
 
         if (records.size() != 0) {

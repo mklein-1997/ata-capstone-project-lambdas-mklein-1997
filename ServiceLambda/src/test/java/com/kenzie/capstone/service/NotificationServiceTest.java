@@ -1,11 +1,11 @@
 package com.kenzie.capstone.service;
 
-import com.kenzie.capstone.service.dao.EventDao;
+import com.kenzie.capstone.service.dao.NotificationDao;
 import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.model.EventData;
-import com.kenzie.capstone.service.model.LambdaEventRecord;
-import com.kenzie.capstone.service.model.LambdaEventRequest;
-import com.kenzie.capstone.service.model.LambdaEventResponse;
+import com.kenzie.capstone.service.model.NotificationRecord;
+import com.kenzie.capstone.service.model.NotificationRequest;
+import com.kenzie.capstone.service.model.NotificationResponse;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -19,32 +19,32 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class LambdaServiceTest {
+class NotificationServiceTest {
 
     /** ------------------------------------------------------------------------
      *  expenseService.getExpenseById
      *  ------------------------------------------------------------------------ **/
 
-    private EventDao eventDao;
-    private LambdaService lambdaService;
+    private NotificationDao notificationDao;
+    private NotificationService notificationService;
 
     @BeforeAll
     void setup() {
-        this.eventDao = mock(EventDao.class);
-        this.lambdaService = new LambdaService(eventDao);
+        this.notificationDao = mock(NotificationDao.class);
+        this.notificationService = new NotificationService(notificationDao);
     }
 
     @Test
     void setDataTest() {
         //GIVEN
-        LambdaEventRequest eventRequest = new LambdaEventRequest();
+        NotificationRequest eventRequest = new NotificationRequest();
         eventRequest.setEventId("fakeid");
         eventRequest.setDate("2021-01-01");
         eventRequest.setCustomerEmail("fakeemail");
         eventRequest.setCustomerName("fakename");
 
         //WHEN
-        LambdaEventResponse response = this.lambdaService.addEvent(eventRequest);
+        NotificationResponse response = this.notificationService.addNotification(eventRequest);
 
         //THEN
         assertNotNull(response);
@@ -64,25 +64,25 @@ class LambdaServiceTest {
         String email = "fakeemail";
         String date = "2021-01-01";
 
-        LambdaEventRecord record = new LambdaEventRecord();
+        NotificationRecord record = new NotificationRecord();
         record.setEventId(id);
         record.setCustomerName(name);
         record.setCustomerEmail(email);
         record.setDate(date);
 
-        when(eventDao.findByEventId(id)).thenReturn(List.of(record));
+        when(notificationDao.findByEventId(id)).thenReturn(List.of(record));
 
         // WHEN
-        EventData response = this.lambdaService.getEventData(id);
+        EventData response = this.notificationService.getNotification(id);
 
         // THEN
-        verify(eventDao, times(1)).findByEventId(idCaptor.capture());
+        verify(notificationDao, times(1)).findByEventId(idCaptor.capture());
 
         assertEquals(id, idCaptor.getValue(), "The correct id is used");
 
         assertNotNull(response, "A response is returned");
         assertEquals(id, response.getEventId(), "The response id should match");
-        reset(eventDao);
+        reset(notificationDao);
     }
 
     @Test
@@ -91,13 +91,13 @@ class LambdaServiceTest {
 
         //GIVEN
         String id = "fakeid";
-        when(eventDao.findByEventId(id)).thenReturn(Collections.emptyList());
+        when(notificationDao.findByEventId(id)).thenReturn(Collections.emptyList());
 
         //WHEN
-        EventData response = this.lambdaService.getEventData(id);
+        EventData response = this.notificationService.getNotification(id);
 
         //THEN
-        verify(eventDao, times(1)).findByEventId(idCaptor.capture());
+        verify(notificationDao, times(1)).findByEventId(idCaptor.capture());
 
         assertEquals(id, idCaptor.getValue(), "The correct id is used");
         assertNull(response, "The response should be null when an empty list is returned");
@@ -110,15 +110,15 @@ class LambdaServiceTest {
         List<String> ids = new ArrayList<>();
         ids.add("fakeid");
 
-        LambdaEventRecord record = new LambdaEventRecord();
+        NotificationRecord record = new NotificationRecord();
         record.setEventId("fakeid");
 
         //WHEN
-        when(eventDao.deleteEvent(record)).thenReturn(true);
-        boolean response = this.lambdaService.deleteEventData(ids);
+        when(notificationDao.deleteEvent(record)).thenReturn(true);
+        boolean response = this.notificationService.deleteNotification(ids);
 
         //THEN
-        verify(eventDao, times(1)).deleteEvent(record);
+        verify(notificationDao, times(1)).deleteEvent(record);
         assertTrue(response);
     }
 
@@ -126,7 +126,7 @@ class LambdaServiceTest {
     void deleteData_nullList_throwsInvalidDataException() {
         //GIVEN
         //WHEN && THEN
-        assertThrows(InvalidDataException.class, () -> this.lambdaService.deleteEventData(null));
+        assertThrows(InvalidDataException.class, () -> this.notificationService.deleteNotification(null));
     }
 
     @Test
@@ -136,7 +136,7 @@ class LambdaServiceTest {
         ids.add(null);
 
         //WHEN && THEN
-        assertThrows(InvalidDataException.class, () -> this.lambdaService.deleteEventData(ids));
+        assertThrows(InvalidDataException.class, () -> this.notificationService.deleteNotification(ids));
     }
 
     @Test
@@ -145,29 +145,29 @@ class LambdaServiceTest {
         List<String> ids = new ArrayList<>();
         ids.add("fakeid");
 
-        LambdaEventRecord record = new LambdaEventRecord();
+        NotificationRecord record = new NotificationRecord();
         record.setEventId("fakeid");
 
         //WHEN
-        when(eventDao.deleteEvent(record)).thenReturn(false);
-        boolean response = this.lambdaService.deleteEventData(ids);
+        when(notificationDao.deleteEvent(record)).thenReturn(false);
+        boolean response = this.notificationService.deleteNotification(ids);
 
         //THEN
-        verify(eventDao, times(1)).deleteEvent(record);
+        verify(notificationDao, times(1)).deleteEvent(record);
         assertFalse(response);
     }
 
     @Test
     void addNewEvent_Test() {
         //GIVEN
-        LambdaEventRequest eventRequest = new LambdaEventRequest();
+        NotificationRequest eventRequest = new NotificationRequest();
         eventRequest.setEventId("fakeid");
         eventRequest.setDate("2021-01-01");
         eventRequest.setCustomerEmail("fakeemail");
         eventRequest.setCustomerName("fakename");
 
         //WHEN
-        LambdaEventResponse response = this.lambdaService.addEvent(eventRequest);
+        NotificationResponse response = this.notificationService.addNotification(eventRequest);
 
         //THEN
         assertNotNull(response);
@@ -182,39 +182,39 @@ class LambdaServiceTest {
         //GIVEN
 
         //WHEN && THEN
-        assertThrows(InvalidDataException.class, () -> this.lambdaService.addEvent(null));
+        assertThrows(InvalidDataException.class, () -> this.notificationService.addNotification(null));
     }
 
     @Test
     void addNewEvent_nullEventId_throwsInvalidDataException() {
         //GIVEN
-        LambdaEventRequest eventRequest = new LambdaEventRequest();
+        NotificationRequest eventRequest = new NotificationRequest();
         eventRequest.setEventId(null);
         eventRequest.setDate("2021-01-01");
         eventRequest.setCustomerEmail("fakeemail");
         eventRequest.setCustomerName("fakename");
 
         //WHEN && THEN
-        assertThrows(InvalidDataException.class, () -> this.lambdaService.addEvent(eventRequest));
+        assertThrows(InvalidDataException.class, () -> this.notificationService.addNotification(eventRequest));
     }
 
     @Test
     void addNewEvent_invalidName_throwsInvalidDataException() {
         //GIVEN
-        LambdaEventRequest eventRequest = new LambdaEventRequest();
+        NotificationRequest eventRequest = new NotificationRequest();
         eventRequest.setEventId(null);
         eventRequest.setDate("2021-01-01");
         eventRequest.setCustomerEmail("fakeemail");
         eventRequest.setCustomerName("");
 
         //WHEN && THEN
-        assertThrows(InvalidDataException.class, () -> this.lambdaService.addEvent(eventRequest));
+        assertThrows(InvalidDataException.class, () -> this.notificationService.addNotification(eventRequest));
     }
 
     @Test
     void updateEvent_Test() {
         //GIVEN
-        LambdaEventRequest eventRequest = new LambdaEventRequest();
+        NotificationRequest eventRequest = new NotificationRequest();
         eventRequest.setEventId("fakeid");
         eventRequest.setDate("2021-01-01");
         eventRequest.setCustomerEmail("fakeemail");
@@ -222,7 +222,7 @@ class LambdaServiceTest {
 
 
         //WHEN
-        LambdaEventResponse response = this.lambdaService.updateEvent(eventRequest);
+        NotificationResponse response = this.notificationService.updateNotification(eventRequest);
 
         //THEN
         assertNotNull(response);
@@ -237,7 +237,7 @@ class LambdaServiceTest {
         //GIVEN
 
         //WHEN && THEN
-        assertThrows(InvalidDataException.class, () -> this.lambdaService.updateEvent(null));
+        assertThrows(InvalidDataException.class, () -> this.notificationService.updateNotification(null));
     }
 
 }

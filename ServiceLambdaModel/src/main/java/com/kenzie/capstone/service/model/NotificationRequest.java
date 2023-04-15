@@ -1,6 +1,6 @@
 package com.kenzie.capstone.service.model;
 
-public class LambdaEventRequest {
+public class NotificationRequest {
     private String eventId;
 
     private String date;

@@ -3,10 +3,10 @@ package com.kenzie.capstone.service.converter;
 import com.kenzie.capstone.service.model.*;
 
 
-public class EventConverter {
+public class NotificationConverter {
 
-    public static LambdaEventRecord fromRequestToRecord(LambdaEventRequest event) {
-        LambdaEventRecord record = new LambdaEventRecord();
+    public static NotificationRecord fromRequestToRecord(NotificationRequest event) {
+        NotificationRecord record = new NotificationRecord();
         record.setEventId(event.getEventId());
         record.setCustomerName(event.getCustomerName());
         record.setCustomerEmail(event.getCustomerEmail());
@@ -15,8 +15,8 @@ public class EventConverter {
         return record;
     }
 
-    public static LambdaEventResponse fromRecordToResponse(LambdaEventRecord record) {
-        LambdaEventResponse eventResponse = new LambdaEventResponse();
+    public static NotificationResponse fromRecordToResponse(NotificationRecord record) {
+        NotificationResponse eventResponse = new NotificationResponse();
         eventResponse.setEventId(record.getEventId());
         eventResponse.setCustomerName(record.getCustomerName());
         eventResponse.setCustomerEmail(record.getCustomerEmail());
