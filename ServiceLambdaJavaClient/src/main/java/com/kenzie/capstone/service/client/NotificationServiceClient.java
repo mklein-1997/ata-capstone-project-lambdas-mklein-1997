@@ -2,19 +2,17 @@ package com.kenzie.capstone.service.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kenzie.capstone.service.model.EventData;
+import com.kenzie.capstone.service.model.Notification;
 import com.kenzie.capstone.service.model.NotificationRequest;
 import com.kenzie.capstone.service.model.NotificationResponse;
-
-import java.util.List;
 
 
 public class NotificationServiceClient {
 
-    private static final String GET_EVENT_ENDPOINT = "/events/eventId";
-    private static final String ADD_EVENT_ENDPOINT = "/events/";
-    private static final String DELETE_EVENT_ENDPOINT = "/events/eventId";
-    private static final String UPDATE_EVENT_ENDPOINT = "/events/eventId";
+    private static final String GET_NOTIFICATION_ENDPOINT = "/notification/eventId";
+    private static final String ADD_NOTIFICATION_ENDPOINT = "/notification/";
+    private static final String DELETE_NOTIFICATION_ENDPOINT = "/notification/eventId";
+    private static final String UPDATE_NOTIFICATION_ENDPOINT = "/notification/eventId";
 
     private final ObjectMapper mapper;
 
@@ -22,16 +20,16 @@ public class NotificationServiceClient {
         this.mapper = new ObjectMapper();
     }
 
-    public EventData getNotification(String eventId) {
+    public Notification getNotification(String eventId) {
         EndpointUtility endpointUtility = new EndpointUtility();
-        String response = endpointUtility.getEndpoint(GET_EVENT_ENDPOINT.replace("eventId", eventId));
-        EventData eventData;
+        String response = endpointUtility.getEndpoint(GET_NOTIFICATION_ENDPOINT.replace("eventId", eventId));
+        Notification notification;
         try {
-            eventData = mapper.readValue(response, EventData.class);
+            notification = mapper.readValue(response, Notification.class);
         } catch (Exception e) {
             throw new ApiGatewayException("Unable to map deserialize JSON: " + e);
         }
-        return eventData;
+        return notification;
     }
 
     public NotificationResponse addNotification(NotificationRequest eventRequest) {
@@ -42,7 +40,7 @@ public class NotificationServiceClient {
         } catch(JsonProcessingException e) {
             throw new ApiGatewayException("Unable to serialize request: " + e);
         }
-        String response = endpointUtility.postEndpoint(ADD_EVENT_ENDPOINT, request);
+        String response = endpointUtility.postEndpoint(ADD_NOTIFICATION_ENDPOINT, request);
         NotificationResponse eventResponse;
         try {
             eventResponse = mapper.readValue(response, NotificationResponse.class);
@@ -60,7 +58,7 @@ public class NotificationServiceClient {
         } catch(JsonProcessingException e) {
             throw new ApiGatewayException("Unable to serialize request: " + e);
         }
-        String response = endpointUtility.putEndpoint(UPDATE_EVENT_ENDPOINT.replace("eventId", eventRequest.getEventId()), request);
+        String response = endpointUtility.putEndpoint(UPDATE_NOTIFICATION_ENDPOINT.replace("eventId", eventRequest.getEventId()), request);
         NotificationResponse eventResponse;
         try {
             eventResponse = mapper.readValue(response, NotificationResponse.class);
@@ -70,17 +68,17 @@ public class NotificationServiceClient {
         return eventResponse;
     }
 
-    public boolean deleteNotification(List<String> eventIds) {
+    public boolean deleteNotification(String eventId) {
         EndpointUtility endpointUtility = new EndpointUtility();
         String request;
 
         try{
-            request = mapper.writeValueAsString(eventIds);
+            request = mapper.writeValueAsString(eventId);
         } catch (JsonProcessingException e) {
             throw new ApiGatewayException("Unable to serialize request: " + e);
         }
 
-        String response = endpointUtility.postEndpoint(DELETE_EVENT_ENDPOINT, request);
+        String response = endpointUtility.postEndpoint(DELETE_NOTIFICATION_ENDPOINT, request);
         boolean result;
 
         try{

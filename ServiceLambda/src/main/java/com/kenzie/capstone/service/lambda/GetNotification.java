@@ -3,7 +3,6 @@ package com.kenzie.capstone.service.lambda;
 import com.kenzie.capstone.service.NotificationService;
 import com.kenzie.capstone.service.dependency.ServiceComponent;
 import com.kenzie.capstone.service.exceptions.InvalidDataException;
-import com.kenzie.capstone.service.model.EventData;
 import com.kenzie.capstone.service.dependency.DaggerServiceComponent;
 
 import com.amazonaws.services.lambda.runtime.Context;
@@ -12,6 +11,7 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.kenzie.capstone.service.model.Notification;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,8 +46,8 @@ public class GetNotification implements RequestHandler<APIGatewayProxyRequestEve
         }
 
         try {
-            EventData eventData = notificationService.getNotification(eventId);
-            String output = gson.toJson(eventData);
+            Notification notification = notificationService.getNotification(eventId);
+            String output = gson.toJson(notification);
 
             return response
                     .withStatusCode(200)

@@ -2,10 +2,7 @@ package com.kenzie.capstone.service;
 
 import com.kenzie.capstone.service.dao.NotificationDao;
 import com.kenzie.capstone.service.exceptions.InvalidDataException;
-import com.kenzie.capstone.service.model.EventData;
-import com.kenzie.capstone.service.model.NotificationRecord;
-import com.kenzie.capstone.service.model.NotificationRequest;
-import com.kenzie.capstone.service.model.NotificationResponse;
+import com.kenzie.capstone.service.model.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -41,7 +38,6 @@ class NotificationServiceTest {
         eventRequest.setEventId("fakeid");
         eventRequest.setDate("2021-01-01");
         eventRequest.setCustomerEmail("fakeemail");
-        eventRequest.setCustomerName("fakename");
 
         //WHEN
         NotificationResponse response = this.notificationService.addNotification(eventRequest);
@@ -51,7 +47,6 @@ class NotificationServiceTest {
         assertEquals("fakeid", response.getEventId());
         assertEquals("2021-01-01", response.getDate());
         assertEquals("fakeemail", response.getCustomerEmail());
-        assertEquals("fakename", response.getCustomerName());
     }
 
     @Test
@@ -66,14 +61,13 @@ class NotificationServiceTest {
 
         NotificationRecord record = new NotificationRecord();
         record.setEventId(id);
-        record.setCustomerName(name);
         record.setCustomerEmail(email);
         record.setDate(date);
 
         when(notificationDao.findByEventId(id)).thenReturn(List.of(record));
 
         // WHEN
-        EventData response = this.notificationService.getNotification(id);
+        Notification response = this.notificationService.getNotification(id);
 
         // THEN
         verify(notificationDao, times(1)).findByEventId(idCaptor.capture());
@@ -94,7 +88,7 @@ class NotificationServiceTest {
         when(notificationDao.findByEventId(id)).thenReturn(Collections.emptyList());
 
         //WHEN
-        EventData response = this.notificationService.getNotification(id);
+        Notification response = this.notificationService.getNotification(id);
 
         //THEN
         verify(notificationDao, times(1)).findByEventId(idCaptor.capture());
@@ -107,15 +101,14 @@ class NotificationServiceTest {
     @Test
     void deleteDataTest() {
         //GIVEN
-        List<String> ids = new ArrayList<>();
-        ids.add("fakeid");
+        String id = "fakeid";
 
         NotificationRecord record = new NotificationRecord();
         record.setEventId("fakeid");
 
         //WHEN
         when(notificationDao.deleteEvent(record)).thenReturn(true);
-        boolean response = this.notificationService.deleteNotification(ids);
+        boolean response = this.notificationService.deleteNotification(id);
 
         //THEN
         verify(notificationDao, times(1)).deleteEvent(record);
@@ -123,34 +116,25 @@ class NotificationServiceTest {
     }
 
     @Test
-    void deleteData_nullList_throwsInvalidDataException() {
-        //GIVEN
-        //WHEN && THEN
-        assertThrows(InvalidDataException.class, () -> this.notificationService.deleteNotification(null));
-    }
-
-    @Test
     void deleteData_nullId_throwsInvalidDataException() {
         //GIVEN
-        List<String> ids = new ArrayList<>();
-        ids.add(null);
+        String id = null;
 
         //WHEN && THEN
-        assertThrows(InvalidDataException.class, () -> this.notificationService.deleteNotification(ids));
+        assertThrows(InvalidDataException.class, () -> this.notificationService.deleteNotification(id));
     }
 
     @Test
     void deleteData_daoReturnsFalse_returnsFalse() {
         //GIVEN
-        List<String> ids = new ArrayList<>();
-        ids.add("fakeid");
+        String id = "fakeid";
 
         NotificationRecord record = new NotificationRecord();
         record.setEventId("fakeid");
 
         //WHEN
         when(notificationDao.deleteEvent(record)).thenReturn(false);
-        boolean response = this.notificationService.deleteNotification(ids);
+        boolean response = this.notificationService.deleteNotification(id);
 
         //THEN
         verify(notificationDao, times(1)).deleteEvent(record);
@@ -164,7 +148,6 @@ class NotificationServiceTest {
         eventRequest.setEventId("fakeid");
         eventRequest.setDate("2021-01-01");
         eventRequest.setCustomerEmail("fakeemail");
-        eventRequest.setCustomerName("fakename");
 
         //WHEN
         NotificationResponse response = this.notificationService.addNotification(eventRequest);
@@ -174,7 +157,6 @@ class NotificationServiceTest {
         assertEquals("fakeid", response.getEventId());
         assertEquals("2021-01-01", response.getDate());
         assertEquals("fakeemail", response.getCustomerEmail());
-        assertEquals("fakename", response.getCustomerName());
     }
 
     @Test
@@ -192,7 +174,6 @@ class NotificationServiceTest {
         eventRequest.setEventId(null);
         eventRequest.setDate("2021-01-01");
         eventRequest.setCustomerEmail("fakeemail");
-        eventRequest.setCustomerName("fakename");
 
         //WHEN && THEN
         assertThrows(InvalidDataException.class, () -> this.notificationService.addNotification(eventRequest));
@@ -205,7 +186,6 @@ class NotificationServiceTest {
         eventRequest.setEventId(null);
         eventRequest.setDate("2021-01-01");
         eventRequest.setCustomerEmail("fakeemail");
-        eventRequest.setCustomerName("");
 
         //WHEN && THEN
         assertThrows(InvalidDataException.class, () -> this.notificationService.addNotification(eventRequest));
@@ -218,7 +198,6 @@ class NotificationServiceTest {
         eventRequest.setEventId("fakeid");
         eventRequest.setDate("2021-01-01");
         eventRequest.setCustomerEmail("fakeemail");
-        eventRequest.setCustomerName("fakename");
 
 
         //WHEN
@@ -229,7 +208,6 @@ class NotificationServiceTest {
         assertEquals("fakeid", response.getEventId());
         assertEquals("2021-01-01", response.getDate());
         assertEquals("fakeemail", response.getCustomerEmail());
-        assertEquals("fakename", response.getCustomerName());
     }
 
     @Test

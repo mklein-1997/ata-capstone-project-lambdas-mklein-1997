@@ -3,10 +3,7 @@ package com.kenzie.capstone.service;
 import com.kenzie.capstone.service.converter.NotificationConverter;
 import com.kenzie.capstone.service.dao.NotificationDao;
 import com.kenzie.capstone.service.exceptions.InvalidDataException;
-import com.kenzie.capstone.service.model.EventData;
-import com.kenzie.capstone.service.model.NotificationRecord;
-import com.kenzie.capstone.service.model.NotificationRequest;
-import com.kenzie.capstone.service.model.NotificationResponse;
+import com.kenzie.capstone.service.model.*;
 
 import javax.inject.Inject;
 
@@ -24,7 +21,7 @@ public class NotificationService {
     }
 
     public NotificationResponse addNotification(NotificationRequest event) {
-        if (event == null || event.getEventId() == null || event.getCustomerName().length() == 0) {
+        if (event == null || event.getEventId() == null || event.getCustomerEmail().length() == 0) {
             throw new InvalidDataException("Request must contain a valid Customer Name");
         }
         NotificationRecord record = NotificationConverter.fromRequestToRecord(event);
@@ -32,17 +29,16 @@ public class NotificationService {
         return NotificationConverter.fromRecordToResponse(record);
     }
 
-    public EventData getNotification(String eventId) {
+    public Notification getNotification(String eventId) {
         List<NotificationRecord> records = notificationDao.findByEventId(eventId);
         if (records.size() > 0) {
-            return new EventData(records.get(0).getEventId(), records.get(0).getCustomerName(),
-                    records.get(0).getCustomerEmail(), records.get(0).getDate(), records.get(0).getStatus());
+            return new Notification(records.get(0).getEventId(), records.get(0).getCustomerEmail(), records.get(0).getDate());
         }
         return null;
     }
 
     public NotificationResponse updateNotification(NotificationRequest event) {
-        if (event == null || event.getEventId() == null || event.getCustomerName().length() == 0) {
+        if (event == null || event.getEventId() == null || event.getCustomerEmail().length() == 0) {
             throw new InvalidDataException("Request must contain a valid Customer Name");
         }
         NotificationRecord record = NotificationConverter.fromRequestToRecord(event);
@@ -50,27 +46,20 @@ public class NotificationService {
         return NotificationConverter.fromRecordToResponse(record);
     }
 
-    public Boolean deleteNotification(List<String> eventIds) {
-        boolean allDeleted = true;
-
-        if(eventIds == null){
-            throw new InvalidDataException("Request must contain a valid list of Event Id's");
+    public Boolean deleteNotification(String eventId) {
+        if(eventId == null){
+            throw new InvalidDataException("Request must contain a valid Event Id");
         }
 
-        for(String eventId : eventIds){
-            if(eventId == null || eventId.length() == 0){
-                throw new InvalidDataException("Event ID cannot be null or empty to delete");
-            }
+        NotificationRecord record = new NotificationRecord();
+        record.setEventId(eventId);
 
-            NotificationRecord record = new NotificationRecord();
-            record.setEventId(eventId);
+        boolean deleted = notificationDao.deleteEvent(record);
 
-            boolean deleted = notificationDao.deleteEvent(record);
-
-            if(!deleted){
-                allDeleted = false;
-            }
+        if(!deleted){
+                deleted = false;
         }
-        return allDeleted;
+
+        return deleted;
     }
 }

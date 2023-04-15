@@ -21,7 +21,6 @@ public class DeleteNotification implements RequestHandler<APIGatewayProxyRequest
 
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent input, Context context) {
-        JsonStringToArrayListStringsConverter jsonStringToArrayListStringsConverter = new JsonStringToArrayListStringsConverter();
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         // Logging the request json to make debugging easier.
@@ -33,8 +32,8 @@ public class DeleteNotification implements RequestHandler<APIGatewayProxyRequest
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 
         try {
-            List<String> eventList = jsonStringToArrayListStringsConverter.convert(input.getBody());
-            boolean allDeleted = notificationService.deleteNotification(eventList);
+            String eventId = gson.fromJson(input.getBody(), String.class);
+            boolean allDeleted = notificationService.deleteNotification(eventId);
 
             return response
                     .withStatusCode(200)

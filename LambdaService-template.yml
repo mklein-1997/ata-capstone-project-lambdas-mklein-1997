@@ -28,7 +28,7 @@ Resources:
         UpdateResource:
           Type: Api
           Properties:
-            Path: /events/{eventId}
+            Path: /notification/{eventId}
             Method: get
   UpdateNotificationFunction:
     Type: AWS::Serverless::Function
@@ -52,7 +52,7 @@ Resources:
         UpdateResource:
           Type: Api
           Properties:
-            Path: /events/{eventId}
+            Path: /notification/{eventId}
             Method: put
   AddNotificationFunction:
     Type: AWS::Serverless::Function
@@ -76,7 +76,7 @@ Resources:
         UpdateResource:
           Type: Api
           Properties:
-            Path: /events
+            Path: /notification/add
             Method: post
   DeleteNotificationFunction:
     Type: AWS::Serverless::Function
@@ -100,6 +100,6 @@ Resources:
         UpdateResource:
           Type: Api
           Properties:
-            Path: /events/{eventId}
-            Method: delete
+            Path: /notification/delete
+            Method: post
 

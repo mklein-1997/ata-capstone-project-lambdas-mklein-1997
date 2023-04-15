@@ -5,10 +5,6 @@ public class NotificationRequest {
 
     private String date;
 
-    private String status;
-
-    private String customerName;
-
     private String customerEmail;
 
     public String getEventId() {
@@ -27,22 +23,6 @@ public class NotificationRequest {
         this.date = date;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
     public String getCustomerEmail() {
         return customerEmail;
     }
@@ -56,8 +36,6 @@ public class NotificationRequest {
         return "EventResponse{" +
                 "eventId='" + eventId + '\'' +
                 ", date='" + date + '\'' +
-                ", status=" + status + '\'' +
-                ", customerName=" + customerName + '\'' +
                 ", customerEmail=" + customerEmail +
                 '}';
     }

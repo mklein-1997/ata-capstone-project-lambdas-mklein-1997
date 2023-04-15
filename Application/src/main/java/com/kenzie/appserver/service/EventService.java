@@ -69,7 +69,7 @@ public class EventService {
 
         eventRepository.save(eventRecord);
         //Commented out because it breaks the tests in the pipeline
-        //notificationServiceClient.addNotification(recordToLambdaRequest(eventRecord));
+        notificationServiceClient.addNotification(recordToNotificationRequest(eventRecord));
         return toEventResponse(eventRecord);
     }
     public EventResponse update(String id, Event event) {
@@ -85,12 +85,14 @@ public class EventService {
         eventRecord.setStatus(event.getEventStatus());
         eventRecord = eventRepository.save(eventRecord);
 
+        notificationServiceClient.updateNotification(recordToNotificationRequest(eventRecord));
         return toEventResponse(eventRecord);
     }
 
     public void deleteEvent(String id) {
         if(id != null){
             eventRepository.deleteById(id);
+            notificationServiceClient.deleteNotification(id);
         }else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Event Not Found");
         }
@@ -121,13 +123,11 @@ public class EventService {
         eventRecord.setStatus(event.getEventStatus());
         return eventRecord;
     }
-    private NotificationRequest recordToLambdaRequest(EventRecord record) {
+    private NotificationRequest recordToNotificationRequest(EventRecord record) {
         NotificationRequest request = new NotificationRequest();
         request.setEventId(record.getEventId());
         request.setCustomerEmail(record.getCustomerEmail());
-        request.setCustomerName(record.getCustomerName());
         request.setDate(record.getDate());
-        request.setStatus(record.getStatus());
         return request;
     }
 }

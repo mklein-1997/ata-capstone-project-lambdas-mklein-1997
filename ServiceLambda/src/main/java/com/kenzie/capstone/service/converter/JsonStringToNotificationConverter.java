@@ -12,7 +12,7 @@ public class JsonStringToNotificationConverter {
             Gson gson = builder.create();
             return gson.fromJson(body, NotificationRequest.class);
         } catch (Exception e) {
-            throw new InvalidDataException("Referral could not be deserialized");
+            throw new InvalidDataException("Notification could not be deserialized");
         }
     }
 }
